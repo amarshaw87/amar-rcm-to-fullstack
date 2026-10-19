@@ -63,7 +63,7 @@
         </div>
         
         <a
-          :href="'https://' + currentProject.repo"
+          :href="currentProject.repo"
           target="_blank"
           rel="noopener noreferrer"
           class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-900/60 hover:bg-sky-800 text-sky-200 border border-sky-700/50 flex items-center gap-1.5 transition-colors"
