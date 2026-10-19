@@ -5,54 +5,54 @@ export const projectsData: ProjectsData = {
   subtitle: "Domain-specific tools engineered to resolve live RCM denial bottlenecks and batch code verification.",
   projects: [
     {
-      id: "rcm-dashboard",
-      name: "Healthcare RCM Analytics Dashboard",
+      id: "prior-auth-engine",
+      name: "Prior Auth Initiation & Approval Engine",
       tech: "React.js • Modern CSS • State Hooks",
-      repo: "github.com/amarshaw87/healthcare-rcm-dashboard",
+      repo: "https://github.com/amarshaw87/prior-auth-engine",
       badge: "Full-Stack Web App",
-      summary: "Interactive US Healthcare claims audit and denial management platform visualizing submissions, revenue-at-risk, and real-time approval ratios.",
+      summary: "Enterprise-grade automation pipeline built to bridge real-world US Healthcare Revenue Cycle Management (RCM) operational bottlenecks with modern front-end engineering.",
       features: [
-        "Audit engine auto-classifies submissions into Approved, Denied, or Manual Review.",
-        "Calculates Clean Claims Rate, Revenue-at-Risk, and Total Billed metrics.",
-        "Live searchable and filterable claims table with patient and CPT code lookups."
+        "Eliminates manual re-typing of patient demographics, NPIs, and clinical codes.",
+        "Automates cross-referencing against massive insurance policy matrices.",
+        "Accelerates transmission of approval or denial evidence to avoid TFL penalties."
       ],
       metrics: [
-        { label: "Audit Accuracy", value: "100%" },
-        { label: "Latency", value: "<120ms" }
+        { label: "Daily Volume", value: "50+ Accounts" },
+        { label: "Language", value: "React/JS" }
       ]
     },
     {
-      id: "claims-automation",
-      name: "Healthcare Claims Code Audit Automation",
-      tech: "Python • Batch Processing • Data Validation",
-      repo: "github.com/amarshaw87/healthcare-claims-automation",
-      badge: "Backend Automation",
-      summary: "High-throughput batch verification script auditing active ICD-10, CPT, and HCPCS billing codes against legacy databases to eliminate payer rejections.",
+      id: "ar-caller-pro",
+      name: "AR Caller Pro",
+      tech: "React.js • Modern CSS • State Hooks",
+      repo: "https://github.com/amarshaw87/Ar-Caller-Pro",
+      badge: "Full-Stack Web App",
+      summary: "High-performance web workspace designed to bridge complex US Healthcare RCM operational business rules with modern frontend engineering patterns.",
       features: [
-        "Automated legacy ICD-9 cross-reference detection to prevent billing rejections.",
-        "Generates audit executive reports with flagged anomalies and revenue totals.",
-        "Robust error-handling for large-volume batch file ingestion."
+        "Optimizes workflows around rigid Interactive Voice Response (IVR) phone trees.",
+        "Provides a clear, responsive tracking UI for specialized CARC/RARC rejection codes.",
+        "Reduces floor onboarding lag and phone anxiety for newly hired AR callers."
       ],
       metrics: [
-        { label: "Throughput", value: "10k+ rows/min" },
-        { label: "Compliance", value: "Zero Rejections" }
+        { label: "Deployment", value: "GitHub Pages" },
+        { label: "Language", value: "React/JS" }
       ]
     },
     {
-      id: "rcm-to-fullstack",
-      name: "Healthcare RCM to Full-Stack Pitch-Deck",
-      tech: "Vue 3 • TypeScript • Vite • CSS Glassmorphism",
-      repo: "github.com/amarshaw87/amar-rcm-to-fullstack",
+      id: "remit-x-matrix",
+      name: "Remit-X-Matrix Engine",
+      tech: "Vue 3 • TypeScript • Plain CSS",
+      repo: "https://github.com/amarshaw87/remit-x-matrix",
       badge: "Vue 3 & TypeScript",
-      summary: "Ultra-responsive 6-folder presentation deck with automatic 16:9/9:16 background switching, 100dvh viewport lock, and touch swipe.",
+      summary: "An enterprise-grade, client-side EDI 835 Electronic Remittance Advice sandbox decoder engineered to handle legacy 5010 and future 008060 claims data streams.",
       features: [
-        "Strict TypeScript architecture with global interfaces and 100% typed data contracts.",
-        "Automatic background switching between landscape desktop and portrait mobile.",
-        "Hardware-accelerated glass card transitions with zero window scrolling."
+        "Instantly decodes unstructured insurance remittance text paths into clear, plain English.",
+        "Dynamic delimiter ingestion automatically adapts to Asterisks (*), Pipes (|), or Carets (^).",
+        "Dual-version validation framework supporting classic 5010 and 11-element 008060 formats."
       ],
       metrics: [
-        { label: "Architecture", value: "6 Modules" },
-        { label: "Performance", value: "60 FPS" }
+        { label: "Vue / TS Mix", value: "98.7%" },
+        { label: "Layout UI", value: "Obsidian Dark" }
       ]
     }
   ]
