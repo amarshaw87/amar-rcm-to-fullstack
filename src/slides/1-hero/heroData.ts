@@ -5,6 +5,7 @@ export const heroData: HeroData = {
   headline: "Full-Stack Developer & US Healthcare RCM Specialist",
   tagline: "Bridging 5+ years of international operations, US healthcare prior authorization, denial management, and billing operations with modern full-stack web engineering.",
   location: "Kolkata, West Bengal, India",
+  badges: ["Meta Certified", "Vue 3", "TypeScript"], // 🌟 Added/Updated to replace the old 5+ Yrs RCM tag
   stats: [
     { label: "Overall Track Record", value: "5+ Years", detail: "Global Ops & RCM Domain" },
     { label: "Auth SLA", value: "99.4%", detail: "Availity, NaviNet & Evicore" },
