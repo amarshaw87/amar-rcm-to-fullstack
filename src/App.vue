@@ -120,14 +120,14 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { SlideConfig } from './types'
 
-// Import Modular Slides (Fixed paths to match exact GitHub folder names)
+// Import Modular Slides (Configured with newly renamed sequential paths)
 import HeroSlide from './slides/1-hero/HeroSlide.vue'
 import CareerSlide from './slides/2-career/CareerSlide.vue'
 import ProjectsSlide from './slides/3-projects/ProjectsSlide.vue'
 import CostRoiSlide from './slides/4-cost-roi/CostRoiSlide.vue'
 import MetaCertificatesSlide from './slides/5-meta-certificates/MetaCertificates.vue'
-import TechStackSlide from './slides/5-tech-stack/TechStackSlide.vue'
-import ContactSlide from './slides/6-contact/ContactSlide.vue'
+import TechStackSlide from './slides/6-tech-stack/TechStackSlide.vue'
+import ContactSlide from './slides/7-contact/ContactSlide.vue'
 
 const slides: SlideConfig[] = [
   { name: 'hero', tabLabel: '1. Hero', component: HeroSlide },
