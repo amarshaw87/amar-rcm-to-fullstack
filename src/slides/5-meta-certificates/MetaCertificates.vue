@@ -54,21 +54,20 @@ const isDragging = ref(false);
 const startX = ref(0);
 const scrollLeft = ref(0);
 
-// Drag Handler Functions
+// Drag Handler Functions (TypeScript compliant touch array pointer access fixed)
 const startDrag = (e: MouseEvent | TouchEvent) => {
   if (!sliderContainer.value) return;
   isDragging.value = true;
   
-  const pageX = e instanceof MouseEvent ? e.pageX : e.touches.pageX;
+  const pageX = e instanceof MouseEvent ? e.pageX : e.touches[0].pageX;
   startX.value = pageX - sliderContainer.value.offsetLeft;
   scrollLeft.value = sliderContainer.value.scrollLeft;
 };
 
 const onDragging = (e: MouseEvent | TouchEvent) => {
   if (!isDragging.value || !sliderContainer.value) return;
-  e.preventDefault();
   
-  const pageX = e instanceof MouseEvent ? e.pageX : e.touches.pageX;
+  const pageX = e instanceof MouseEvent ? e.pageX : e.touches[0].pageX;
   const x = pageX - sliderContainer.value.offsetLeft;
   const walk = (x - startX.value) * 1.5; // Drag speed multiplier
   sliderContainer.value.scrollLeft = scrollLeft.value - walk;
@@ -83,7 +82,7 @@ const openCertificate = (url: string) => {
   window.open(url, '_blank', 'noopener,noreferrer');
 };
 
-// 4. Reset Button Action: Click karte hi container smoothly wapas X: 0 par scroll back hoga
+// 4. Reset Button Action
 const resetView = () => {
   if (sliderContainer.value) {
     sliderContainer.value.scrollTo({
@@ -155,7 +154,7 @@ onUnmounted(() => {
             </svg>
           </button>
 
-          <!-- Text Information Box Structure Node Title Layout Descriptor Alignment Block -->
+          <!-- Text Information Box Structure Node Title Layout -->
           <div class="mt-3 flex flex-col items-center w-full">
             <h4 class="text-[11px] md:text-xs font-semibold tracking-wide text-slate-100 group-hover:text-[#38bdf8] line-clamp-2 min-h-[2rem] transition-colors duration-200 px-1">
               {{ node.title }}
@@ -190,7 +189,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-/* Hide standard horizontal scrollbar indicators */
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
