@@ -73,7 +73,23 @@ export interface CostRoiData {
   advantages: CostAdvantage[]
 }
 
-// Slide 5: Tech Stack Types
+// Slide 5: Meta Certificates Types (New Added)
+export interface CertificateNode {
+  id: number
+  title: string
+  duration: string
+  credentialId: string
+  link: string
+}
+
+export interface MetaCertificatesData {
+  title: string
+  subtitle: string
+  description: string
+  certificates: CertificateNode[]
+}
+
+// Slide 6: Tech Stack Types (Shifted from Slide 5)
 export interface TechSkill {
   name: string
   level: 'Expert' | 'Mastery' | 'Advanced' | 'Proficient' | 'Intermediate'
@@ -92,7 +108,7 @@ export interface TechStackData {
   categories: TechCategory[]
 }
 
-// Slide 6: Contact Types
+// Slide 7: Contact Types (Shifted from Slide 6)
 export interface ContactMethod {
   type: string
   value: string
