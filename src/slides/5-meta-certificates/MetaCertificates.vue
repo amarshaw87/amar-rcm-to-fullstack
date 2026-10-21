@@ -78,7 +78,12 @@ const stopDrag = () => {
   isDragging.value = false;
 };
 
-// 3. Reset Button Action: Click karte hi container smoothly wapas X: 0 par aa jayega
+// 3. Isolated Native Window Redirection Helper Method
+const openCertificate = (url: string) => {
+  window.open(url, '_blank', 'noopener,noreferrer');
+};
+
+// 4. Reset Button Action: Click karte hi container smoothly wapas X: 0 par scroll back hoga
 const resetView = () => {
   if (sliderContainer.value) {
     sliderContainer.value.scrollTo({
@@ -135,9 +140,9 @@ onUnmounted(() => {
           
           <!-- Interactive Functional Square Meta Branding Node Container Button -->
           <button 
-            @click="window.open(node.link, '_blank')"
+            @click="openCertificate(node.link)"
             title="Click to view full verifiable certificate token credentials"
-            class="w-14 h-14 md:w-16 md:h-16 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center relative shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:border-[#38bdf8] group-hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] transition-all duration-300 transform group-hover:-translate-y-1"
+            class="w-14 h-14 md:w-16 md:h-16 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center relative shadow-[0_0_15px_rgba(0,0,0,0.5)] group-hover:border-[#38bdf8] group-hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] transition-all duration-300 transform group-hover:-translate-y-1 cursor-pointer"
           >
             <!-- Badge Order Sequential Node Label Overlay Indicator -->
             <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#38bdf8] text-[#060b13] text-[9px] font-black rounded-full flex items-center justify-center shadow-md">
