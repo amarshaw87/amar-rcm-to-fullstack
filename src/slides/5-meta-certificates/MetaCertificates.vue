@@ -39,7 +39,7 @@ const buttonClasses = computed(() => {
   ].join(' ');
 });
 
-// Fixed Dynamic SVG Rope Path Generation Logic
+// Fixed Dynamic SVG Rope Path Generation Logic using explicit array indices
 const svgPath = computed(() => {
   const nodes = certificates.value;
   if (!nodes || nodes.length === 0) return 'M 10,120 L 1800,120';
@@ -172,7 +172,7 @@ onUnmounted(() => {
 <template>
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
-    <!-- Top Decorative Header Section -->
+    <!-- Header -->
     <div class="text-center mt-2">
       <span class="text-[10px] font-semibold tracking-widest text-[#38bdf8] uppercase">Professional Validation</span>
       <h2 class="text-xl md:text-2xl font-bold mt-0.5 text-white tracking-tight drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
@@ -183,7 +183,7 @@ onUnmounted(() => {
       </p>
     </div>
 
-    <!-- Draggable Flowchart Canvas Area Wrapper -->
+    <!-- Draggable Canvas -->
     <div 
       ref="sliderContainer"
       @scroll="handleCanvasScrollSync"
@@ -218,7 +218,7 @@ onUnmounted(() => {
         </defs>
       </svg>
 
-      <!-- Node Track Rendering Layout Grid Layer -->
+      <!-- Layout Grid Layer -->
       <div class="flex items-start space-x-12 md:space-x-16 relative z-10 px-4 w-max pt-6">
         <div 
           v-for="(node, index) in certificates" 
@@ -231,7 +231,7 @@ onUnmounted(() => {
           class="flex flex-col items-center w-36 md:w-44 text-center shrink-0 snap-center select-none"
         >
           
-          <!-- Flexible Individual Square Node Icon -->
+          <!-- Node Container Box -->
           <div
             @mousedown="(e) => startNodeDrag(e, node.id)"
             @touchstart="(e) => startNodeDrag(e, node.id)"
@@ -255,7 +255,7 @@ onUnmounted(() => {
             </svg>
           </div>
 
-          <!-- Unified Dragging Text Block Content -->
+          <!-- Text Block Content Area -->
           <div class="mt-4 flex flex-col items-center w-full relative z-30">
             <button
               @click="openCertificate(node.link)"
@@ -313,7 +313,6 @@ onUnmounted(() => {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Custom CSS Styling for Neon Slider Thumb UI */
 .custom-path-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
