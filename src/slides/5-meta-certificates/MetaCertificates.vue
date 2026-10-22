@@ -159,6 +159,7 @@ onUnmounted(() => {
 });
 </script>
 <template>
+  <!-- Background matches Healthcare Project Card texture perfectly -->
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
     <!-- Top Decorative Header Section -->
@@ -188,16 +189,17 @@ onUnmounted(() => {
     >
       
       <!-- DYNAMIC SVG ROPE GENERATOR LAYER -->
+      <!-- FIXED: Indexing syntax errors resolved using clear array element chains safely -->
       <svg class="absolute left-0 top-0 h-full w-[1800px] pointer-events-none z-0" xmlns="http://w3.org">
         <path 
           :d="`
             M 10,120 
-            Q 80,${120 + (certificates[0] ? certificates[0].offsetY : 0)} 160,${120 + (certificates[0] ? certificates[0].offsetY : 0)} 
-            C 240,${120 + (certificates[0] ? certificates[0].offsetY : 0)} 240,${120 + (certificates[1] ? certificates[1].offsetY : 0)} 320,${120 + (certificates[1] ? certificates[1].offsetY : 0)}
-            C 400,${120 + (certificates[1] ? certificates[1].offsetY : 0)} 400,${120 + (certificates[2] ? certificates[2].offsetY : 0)} 480,${120 + (certificates[2] ? certificates[2].offsetY : 0)}
-            C 560,${120 + (certificates[2] ? certificates[2].offsetY : 0)} 560,${120 + (certificates[3] ? certificates[3].offsetY : 0)} 640,${120 + (certificates[3] ? certificates[3].offsetY : 0)}
-            C 720,${120 + (certificates[3] ? certificates[3].offsetY : 0)} 720,${120 + (certificates[4] ? certificates[4].offsetY : 0)} 800,${120 + (certificates[4] ? certificates[4].offsetY : 0)}
-            C 880,${120 + (certificates[4] ? certificates[4].offsetY : 0)} 880,${120 + (certificates[5] ? certificates[5].offsetY : 0)} 960,${120 + (certificates[5] ? certificates[5].offsetY : 0)}
+            Q 80,${120 + (certificates[0]?.offsetY || 0)} 160,${120 + (certificates[0]?.offsetY || 0)} 
+            C 240,${120 + (certificates[0]?.offsetY || 0)} 240,${120 + (certificates[1]?.offsetY || 0)} 320,${120 + (certificates[1]?.offsetY || 0)}
+            C 400,${120 + (certificates[1]?.offsetY || 0)} 400,${120 + (certificates[2]?.offsetY || 0)} 480,${120 + (certificates[2]?.offsetY || 0)}
+            C 560,${120 + (certificates[2]?.offsetY || 0)} 560,${120 + (certificates[3]?.offsetY || 0)} 640,${120 + (certificates[3]?.offsetY || 0)}
+            C 720,${120 + (certificates[3]?.offsetY || 0)} 720,${120 + (certificates[4]?.offsetY || 0)} 800,${120 + (certificates[4]?.offsetY || 0)}
+            C 880,${120 + (certificates[4]?.offsetY || 0)} 880,${120 + (certificates[5]?.offsetY || 0)} 960,${120 + (certificates[5]?.offsetY || 0)}
             L 1800,120
           `"
           fill="none"
