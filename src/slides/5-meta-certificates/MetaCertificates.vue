@@ -159,6 +159,7 @@ onUnmounted(() => {
 });
 </script>
 <template>
+  <!-- Background panel color scheme adjusted to match Healthcare Project Card tone perfectly -->
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
     <!-- Top Decorative Header Section -->
@@ -188,6 +189,7 @@ onUnmounted(() => {
     >
       
       <!-- DYNAMIC SVG ROPE GENERATOR LAYER -->
+      <!-- FIXED: Strict syntax array loop indexes mapping for absolute compiler safety -->
       <svg class="absolute left-0 top-0 h-full w-[1800px] pointer-events-none z-0" xmlns="http://w3.org">
         <path 
           :d="`
