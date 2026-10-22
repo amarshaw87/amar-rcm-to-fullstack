@@ -51,7 +51,7 @@ const handleSliderInput = (e: Event) => {
 const startCanvasDrag = (e: MouseEvent | TouchEvent) => {
   if (isNodeDragging.value || !sliderContainer.value) return;
   isCanvasDragging.value = true;
-  const pageX = e instanceof MouseEvent ? e.pageX : e.touches[0].pageX;
+  const pageX = e instanceof MouseEvent ? e.pageX : e.touches.pageX;
   startCanvasX.value = pageX - sliderContainer.value.offsetLeft;
   canvasScrollLeft.value = sliderContainer.value.scrollLeft;
 };
@@ -59,8 +59,8 @@ const startCanvasDrag = (e: MouseEvent | TouchEvent) => {
 const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
   if (isNodeDragging.value && activeNodeId.value !== null) {
     e.preventDefault();
-    const currentX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
-    const currentY = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
+    const currentX = e instanceof MouseEvent ? e.clientX : e.touches.clientX;
+    const currentY = e instanceof MouseEvent ? e.clientY : e.touches.clientY;
     
     const deltaX = currentX - nodeStartX.value;
     const deltaY = currentY - nodeStartY.value;
@@ -90,7 +90,7 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
   }
 
   if (!isCanvasDragging.value || !sliderContainer.value) return;
-  const pageX = e instanceof MouseEvent ? e.pageX : e.touches[0].pageX;
+  const pageX = e instanceof MouseEvent ? e.pageX : e.touches.pageX;
   const x = pageX - sliderContainer.value.offsetLeft;
   const walk = (x - startCanvasX.value) * 1.5;
   sliderContainer.value.scrollLeft = canvasScrollLeft.value - walk;
@@ -113,8 +113,8 @@ const startNodeDrag = (e: MouseEvent | TouchEvent, nodeId: number) => {
   activeNodeId.value = nodeId;
   isResetting.value = false;
   
-  const clientX = e instanceof MouseEvent ? e.clientX : e.touches[0].clientX;
-  const clientY = e instanceof MouseEvent ? e.clientY : e.touches[0].clientY;
+  const clientX = e instanceof MouseEvent ? e.clientX : e.touches.clientX;
+  const clientY = e instanceof MouseEvent ? e.clientY : e.touches.clientY;
   
   const targetNode = certificates.value.find(n => n.id === nodeId);
   if (targetNode) {
@@ -153,7 +153,8 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <section class="relative w-full h-full flex flex-col justify-between items-center bg-[#060b13] text-white overflow-hidden p-4 select-none">
+  <!-- Background changed from pitch black to project card matching navy blue gradient look -->
+  <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
     <!-- Top Decorative Header Section -->
     <div class="text-center mt-2">
@@ -186,12 +187,12 @@ onUnmounted(() => {
         <path 
           :d="`
             M 10,120 
-            Q 80,${120 + (certificates[0]?.offsetY || 0)} 160,${120 + (certificates[0]?.offsetY || 0)} 
-            C 240,${120 + (certificates[0]?.offsetY || 0)} 240,${120 + (certificates[1]?.offsetY || 0)} 320,${120 + (certificates[1]?.offsetY || 0)}
-            C 400,${120 + (certificates[1]?.offsetY || 0)} 400,${120 + (certificates[2]?.offsetY || 0)} 480,${120 + (certificates[2]?.offsetY || 0)}
-            C 560,${120 + (certificates[2]?.offsetY || 0)} 560,${120 + (certificates[3]?.offsetY || 0)} 640,${120 + (certificates[3]?.offsetY || 0)}
-            C 720,${120 + (certificates[3]?.offsetY || 0)} 720,${120 + (certificates[4]?.offsetY || 0)} 800,${120 + (certificates[4]?.offsetY || 0)}
-            C 880,${120 + (certificates[4]?.offsetY || 0)} 880,${120 + (certificates[5]?.offsetY || 0)} 960,${120 + (certificates[5]?.offsetY || 0)}
+            Q 80,${120 + (certificates?.offsetY || 0)} 160,${120 + (certificates?.offsetY || 0)} 
+            C 240,${120 + (certificates?.offsetY || 0)} 240,${120 + (certificates?.offsetY || 0)} 320,${120 + (certificates?.offsetY || 0)}
+            C 400,${120 + (certificates?.offsetY || 0)} 400,${120 + (certificates?.offsetY || 0)} 480,${120 + (certificates?.offsetY || 0)}
+            C 560,${120 + (certificates?.offsetY || 0)} 560,${120 + (certificates?.offsetY || 0)} 640,${120 + (certificates?.offsetY || 0)}
+            C 720,${120 + (certificates?.offsetY || 0)} 720,${120 + (certificates?.offsetY || 0)} 800,${120 + (certificates?.offsetY || 0)}
+            C 880,${120 + (certificates?.offsetY || 0)} 880,${120 + (certificates?.offsetY || 0)} 960,${120 + (certificates?.offsetY || 0)}
             L 1800,120
           `"
           fill="none"
@@ -263,11 +264,13 @@ onUnmounted(() => {
 
     <!-- Bottom UX Interface Controller Panel -->
     <div class="mb-2 flex flex-col items-center space-y-3 w-full max-w-xs">
+      
+      
       <button 
         @click="resetView"
         class="px-4 py-1.5 text-[10px] font-semibold tracking-widest text-[#38bdf8] border border-[#38bdf8]/30 rounded-full bg-[#38bdf8]/5 hover:bg-[#38bdf8] hover:text-[#060b13] hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all duration-300 uppercase transform active:scale-95 cursor-pointer"
       >
-        🎯 Reset Viewport Path
+        Reset Viewport Path
       </button>
 
       <!-- Sync Horizontal Range Element Track Component -->
