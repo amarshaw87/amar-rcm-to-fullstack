@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onUnmounted } from 'vue';
+import { ref, computed, onUnmounted } from 'vue';
 import { certificatesData } from './certificatesData';
 
 // Reactive instance references matching your split design configuration pattern
@@ -20,8 +20,6 @@ const sliderContainer = ref<HTMLElement | null>(null);
 const isCanvasDragging = ref(false);
 const startCanvasX = ref(0);
 const canvasScrollLeft = ref(0);
-
-// Custom Horizontal Range Navigation Slider Parameter
 const scrollProgress = ref(0);
 
 // Node Specific Physics Drag Parameters
@@ -30,6 +28,36 @@ const nodeStartX = ref(0);
 const nodeStartY = ref(0);
 const isNodeDragging = ref(false);
 const isResetting = ref(false);
+
+// Long Tailwind utility classes array split into a structured computed property
+const buttonClasses = computed(() => {
+  return [
+    'text-[11px] md:text-xs font-semibold tracking-wide text-slate-100',
+    'hover:text-[#38bdf8] active:scale-95 line-clamp-2 min-h-[2rem]',
+    'transition-all duration-200 px-1 cursor-pointer underline',
+    'decoration-dotted decoration-slate-700 hover:decoration-[#38bdf8]'
+  ].join(' ');
+});
+
+// Dynamic SVG elastic path calculation system
+const svgPath = computed(() => {
+  const nodes = certificates.value;
+  const y0 = 120 + (nodes[0]?.offsetY || 0);
+  const y1 = 120 + (nodes[1]?.offsetY || 0);
+  const y2 = 120 + (nodes[2]?.offsetY || 0);
+  const y3 = 120 + (nodes[3]?.offsetY || 0);
+  const y4 = 120 + (nodes[4]?.offsetY || 0);
+
+  return `
+    M 10,120 
+    Q 80,${y0} 160,${y0} 
+    C 240,${y1} 240,${y1} 320,${y1}
+    C 400,${y2} 400,${y2} 480,${y2}
+    C 560,${y3} 560,${y3} 640,${y3}
+    C 720,${y4} 720,${y4} 800,${y4}
+    L 1800,120
+  `;
+});
 
 // --- DYNAMIC SLIDER TRACKING SYSTEM ---
 const handleCanvasScrollSync = () => {
@@ -46,7 +74,6 @@ const handleSliderInput = (e: Event) => {
   const target = e.target as HTMLInputElement;
   const val = parseFloat(target.value);
   scrollProgress.value = val;
-  
   const maxScroll = sliderContainer.value.scrollWidth - sliderContainer.value.clientWidth;
   sliderContainer.value.scrollLeft = (val / 100) * maxScroll;
 };
@@ -55,7 +82,6 @@ const handleSliderInput = (e: Event) => {
 const startCanvasDrag = (e: MouseEvent | TouchEvent) => {
   if (isNodeDragging.value || !sliderContainer.value) return;
   isCanvasDragging.value = true;
-  
   const pageX = e instanceof MouseEvent ? e.pageX : (e.touches && e.touches[0] ? e.touches[0].pageX : 0);
   startCanvasX.value = pageX - sliderContainer.value.offsetLeft;
   canvasScrollLeft.value = sliderContainer.value.scrollLeft;
@@ -64,30 +90,23 @@ const startCanvasDrag = (e: MouseEvent | TouchEvent) => {
 const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
   if (isNodeDragging.value && activeNodeId.value !== null) {
     e.preventDefault();
-    
     const currentX = e instanceof MouseEvent ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
     const currentY = e instanceof MouseEvent ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-    
     const deltaX = currentX - nodeStartX.value;
     const deltaY = currentY - nodeStartY.value;
-    
     const activeIndex = certificates.value.findIndex(n => n.id === activeNodeId.value);
     
     if (activeIndex !== -1) {
       certificates.value[activeIndex].offsetX = deltaX;
       certificates.value[activeIndex].offsetY = deltaY;
       
-      // PHYSICS PROPAGATION CHAIN LOGIC: Soft wave tension dropoff decay (0.45 factor)
       for (let i = activeIndex - 1; i >= 0; i--) {
-        const distance = activeIndex - i;
-        const dampFactor = Math.pow(0.45, distance); 
+        const dampFactor = Math.pow(0.45, activeIndex - i); 
         certificates.value[i].offsetX = deltaX * dampFactor;
         certificates.value[i].offsetY = deltaY * dampFactor;
       }
-      
       for (let i = activeIndex + 1; i < certificates.value.length; i++) {
-        const distance = i - activeIndex;
-        const dampFactor = Math.pow(0.45, distance); 
+        const dampFactor = Math.pow(0.45, i - activeIndex); 
         certificates.value[i].offsetX = deltaX * dampFactor;
         certificates.value[i].offsetY = deltaY * dampFactor;
       }
@@ -100,7 +119,6 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
   const x = pageX - sliderContainer.value.offsetLeft;
   const walk = (x - startCanvasX.value) * 1.5;
   sliderContainer.value.scrollLeft = canvasScrollLeft.value - walk;
-  
   const maxScroll = sliderContainer.value.scrollWidth - sliderContainer.value.clientWidth;
   if (maxScroll > 0) {
     scrollProgress.value = (sliderContainer.value.scrollLeft / maxScroll) * 100;
@@ -118,10 +136,8 @@ const startNodeDrag = (e: MouseEvent | TouchEvent, nodeId: number) => {
   isNodeDragging.value = true;
   activeNodeId.value = nodeId;
   isResetting.value = false;
-  
   const clientX = e instanceof MouseEvent ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
   const clientY = e instanceof MouseEvent ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
-  
   const targetNode = certificates.value.find(n => n.id === nodeId);
   if (targetNode) {
     nodeStartX.value = clientX - targetNode.offsetX;
@@ -140,18 +156,11 @@ const resetView = () => {
     node.offsetX = 0;
     node.offsetY = 0;
   });
-
   scrollProgress.value = 0;
   if (sliderContainer.value) {
-    sliderContainer.value.scrollTo({
-      left: 0,
-      behavior: 'smooth'
-    });
+    sliderContainer.value.scrollTo({ left: 0, behavior: 'smooth' });
   }
-
-  setTimeout(() => {
-    isResetting.value = false;
-  }, 600);
+  setTimeout(() => { isResetting.value = false; }, 600);
 };
 
 onUnmounted(() => {
@@ -159,7 +168,6 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <!-- Background panel color scheme adjusted to match Healthcare Project Card tone perfectly -->
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
     <!-- Top Decorative Header Section -->
@@ -191,16 +199,7 @@ onUnmounted(() => {
       <!-- DYNAMIC SVG ROPE GENERATOR LAYER -->
       <svg class="absolute left-0 top-0 h-full w-[1800px] pointer-events-none z-0" xmlns="http://w3.org">
         <path 
-          :d="`
-            M 10,120 
-            Q 80,${120 + (certificates?.offsetY || 0)} 160,${120 + (certificates?.offsetY || 0)} 
-            C 240,${120 + (certificates?.offsetY || 0)} 240,${120 + (certificates?.offsetY || 0)} 320,${120 + (certificates?.offsetY || 0)}
-            C 400,${120 + (certificates?.offsetY || 0)} 400,${120 + (certificates?.offsetY || 0)} 480,${120 + (certificates?.offsetY || 0)}
-            C 560,${120 + (certificates?.offsetY || 0)} 560,${120 + (certificates?.offsetY || 0)} 640,${120 + (certificates?.offsetY || 0)}
-            C 720,${120 + (certificates?.offsetY || 0)} 720,${120 + (certificates?.offsetY || 0)} 800,${120 + (certificates?.offsetY || 0)}
-            C 880,${120 + (certificates?.offsetY || 0)} 880,${120 + (certificates?.offsetY || 0)} 960,${120 + (certificates?.offsetY || 0)}
-            L 1800,120
-          `"
+          :d="svgPath"
           fill="none"
           stroke="url(#rope-gradient)"
           stroke-width="3"
@@ -252,7 +251,6 @@ onUnmounted(() => {
                 </linearGradient>
               </defs>
             </svg>
-
           </div>
 
           <!-- Unified Dragging Text Block Content -->
@@ -261,7 +259,7 @@ onUnmounted(() => {
               @click="openCertificate(node.link)"
               @mousedown.stop
               @touchstart.stop
-              class="text-[11px] md:text-xs font-semibold tracking-wide text-slate-100 hover:text-[#38bdf8] active:scale-95 line-clamp-2 min-h-[2rem] transition-all duration-200 px-1 cursor-pointer underline decoration-dotted decoration-slate-700 hover:decoration-[#38bdf8]"
+              :class="buttonClasses"
             >
               {{ node.title }}
             </button>
@@ -275,12 +273,10 @@ onUnmounted(() => {
 
         </div>
       </div>
-
     </div>
 
     <!-- Bottom UX Interface Controller Panel -->
     <div class="mb-2 flex flex-col items-center space-y-3 w-full max-w-xs">
-      
       <button 
         @click="resetView"
         class="px-4 py-1.5 text-[10px] font-semibold tracking-widest text-[#38bdf8] border border-[#38bdf8]/30 rounded-full bg-[#38bdf8]/5 hover:bg-[#38bdf8] hover:text-[#060b13] hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all duration-300 uppercase transform active:scale-95 cursor-pointer"
@@ -288,7 +284,6 @@ onUnmounted(() => {
         Reset Viewport Path
       </button>
 
-      <!-- Sync Horizontal Range Element Track Component -->
       <div class="w-full flex flex-col items-center px-2">
         <input 
           type="range" 
@@ -313,13 +308,8 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 
 /* Custom CSS Styling for Neon Slider Thumb UI */
 .custom-path-slider::-webkit-slider-thumb {
@@ -333,9 +323,7 @@ onUnmounted(() => {
   cursor: pointer;
   transition: transform 0.1s ease;
 }
-.custom-path-slider::-webkit-slider-thumb:hover {
-  transform: scale(1.25);
-}
+.custom-path-slider::-webkit-slider-thumb:hover { transform: scale(1.25); }
 .custom-path-slider::-moz-range-thumb {
   width: 12px;
   height: 12px;
