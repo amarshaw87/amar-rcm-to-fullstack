@@ -3,7 +3,13 @@ import { ref, onUnmounted } from 'vue';
 import { certificatesData } from './certificatesData';
 
 // Reactive instance references matching your split design configuration pattern
-const certificates = ref([...certificatesData]);
+const certificates = ref(
+  certificatesData.map(node => ({
+    ...node,
+    offsetX: 0,
+    offsetY: 0
+  }))
+);
 
 // Canvas Global Drag Parameters
 const sliderContainer = ref<HTMLElement | null>(null);
@@ -11,12 +17,35 @@ const isCanvasDragging = ref(false);
 const startCanvasX = ref(0);
 const canvasScrollLeft = ref(0);
 
+// Custom Horizontal Range Navigation Slider Parameter
+const scrollProgress = ref(0);
+
 // Node Specific Physics Drag Parameters
 const activeNodeId = ref<number | null>(null);
 const nodeStartX = ref(0);
 const nodeStartY = ref(0);
 const isNodeDragging = ref(false);
 const isResetting = ref(false);
+
+// --- DYNAMIC SLIDER TRACKING SYSTEM ---
+const handleCanvasScrollSync = () => {
+  if (!sliderContainer.value || isCanvasDragging.value) return;
+  const { scrollLeft, scrollWidth, clientWidth } = sliderContainer.value;
+  const maxScroll = scrollWidth - clientWidth;
+  if (maxScroll > 0) {
+    scrollProgress.value = (scrollLeft / maxScroll) * 100;
+  }
+};
+
+const handleSliderInput = (e: Event) => {
+  if (!sliderContainer.value) return;
+  const target = e.target as HTMLInputElement;
+  const val = parseFloat(target.value);
+  scrollProgress.value = val;
+  
+  const maxScroll = sliderContainer.value.scrollWidth - sliderContainer.value.clientWidth;
+  sliderContainer.value.scrollLeft = (val / 100) * maxScroll;
+};
 
 // --- CANVAS SCROLL DRAG SYSTEM ---
 const startCanvasDrag = (e: MouseEvent | TouchEvent) => {
@@ -36,10 +65,26 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
     const deltaX = currentX - nodeStartX.value;
     const deltaY = currentY - nodeStartY.value;
     
-    const targetNode = certificates.value.find(n => n.id === activeNodeId.value);
-    if (targetNode) {
-      targetNode.offsetX = deltaX;
-      targetNode.offsetY = deltaY;
+    const activeIndex = certificates.value.findIndex(n => n.id === activeNodeId.value);
+    
+    if (activeIndex !== -1) {
+      certificates.value[activeIndex].offsetX = deltaX;
+      certificates.value[activeIndex].offsetY = deltaY;
+      
+      // PHYSICS PROPAGATION CHAIN LOGIC: Soft wave tension dropoff decay (0.45 factor)
+      for (let i = activeIndex - 1; i >= 0; i--) {
+        const distance = activeIndex - i;
+        const dampFactor = Math.pow(0.45, distance); 
+        certificates.value[i].offsetX = deltaX * dampFactor;
+        certificates.value[i].offsetY = deltaY * dampFactor;
+      }
+      
+      for (let i = activeIndex + 1; i < certificates.value.length; i++) {
+        const distance = i - activeIndex;
+        const dampFactor = Math.pow(0.45, distance); 
+        certificates.value[i].offsetX = deltaX * dampFactor;
+        certificates.value[i].offsetY = deltaY * dampFactor;
+      }
     }
     return;
   }
@@ -49,6 +94,11 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
   const x = pageX - sliderContainer.value.offsetLeft;
   const walk = (x - startCanvasX.value) * 1.5;
   sliderContainer.value.scrollLeft = canvasScrollLeft.value - walk;
+  
+  const maxScroll = sliderContainer.value.scrollWidth - sliderContainer.value.clientWidth;
+  if (maxScroll > 0) {
+    scrollProgress.value = (sliderContainer.value.scrollLeft / maxScroll) * 100;
+  }
 };
 
 const stopGlobalDrag = () => {
@@ -57,7 +107,6 @@ const stopGlobalDrag = () => {
   activeNodeId.value = null;
 };
 
-// --- INTERACTIVE INDIVIDUAL ROPE GROUP DRAG ---
 const startNodeDrag = (e: MouseEvent | TouchEvent, nodeId: number) => {
   e.stopPropagation();
   isNodeDragging.value = true;
@@ -86,6 +135,7 @@ const resetView = () => {
     node.offsetY = 0;
   });
 
+  scrollProgress.value = 0;
   if (sliderContainer.value) {
     sliderContainer.value.scrollTo({
       left: 0,
@@ -103,7 +153,6 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <!-- Full Viewport Lock Dashboard Component Container -->
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-[#060b13] text-white overflow-hidden p-4 select-none">
     
     <!-- Top Decorative Header Section -->
@@ -120,6 +169,7 @@ onUnmounted(() => {
     <!-- Draggable Flowchart Canvas Area Wrapper -->
     <div 
       ref="sliderContainer"
+      @scroll="handleCanvasScrollSync"
       @mousedown="startCanvasDrag"
       @mousemove="handleGlobalDragging"
       @mouseup="stopGlobalDrag"
@@ -131,7 +181,7 @@ onUnmounted(() => {
       class="w-full overflow-x-auto overflow-y-hidden flex items-center relative py-16 px-4 scrollbar-hide snap-x"
     >
       
-      <!-- DYNAMIC SVG ROPE GENERATOR LAYER: Auto-draws curves matching node translations -->
+      <!-- DYNAMIC SVG ROPE GENERATOR LAYER -->
       <svg class="absolute left-0 top-0 h-full w-[1800px] pointer-events-none z-0" xmlns="http://w3.org">
         <path 
           :d="`
@@ -188,7 +238,7 @@ onUnmounted(() => {
             </svg>
           </div>
 
-          <!-- Unified Dragging Text Block Content (MOVES TOGETHER WITH CORRESPONDING BOXES) -->
+          <!-- Unified Dragging Text Block Content -->
           <div class="mt-4 flex flex-col items-center w-full relative z-30">
             <button
               @click="openCertificate(node.link)"
@@ -212,15 +262,32 @@ onUnmounted(() => {
     </div>
 
     <!-- Bottom UX Interface Controller Panel -->
-    <div class="mb-2 flex flex-col items-center space-y-1.5">
+    <div class="mb-2 flex flex-col items-center space-y-3 w-full max-w-xs">
       <button 
         @click="resetView"
         class="px-4 py-1.5 text-[10px] font-semibold tracking-widest text-[#38bdf8] border border-[#38bdf8]/30 rounded-full bg-[#38bdf8]/5 hover:bg-[#38bdf8] hover:text-[#060b13] hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all duration-300 uppercase transform active:scale-95 cursor-pointer"
       >
         🎯 Reset Viewport Path
       </button>
-      <span class="text-[9px] text-slate-500 font-mono">
-        ← Swipe canvas left/right • Hold & drag square boxes to float them and stretch the path rope →
+
+      <!-- Sync Horizontal Range Element Track Component -->
+      <div class="w-full flex flex-col items-center px-2">
+        <input 
+          type="range" 
+          min="0" 
+          max="100" 
+          :value="scrollProgress" 
+          @input="handleSliderInput"
+          class="custom-path-slider w-full h-1 bg-slate-900 border border-slate-800 rounded-lg appearance-none cursor-pointer"
+        />
+        <div class="w-full flex justify-between mt-1 text-[8px] font-mono text-slate-500 tracking-wider uppercase">
+          <span>Start</span>
+          <span>More Tracks ➔</span>
+        </div>
+      </div>
+
+      <span class="text-[9px] text-slate-500 font-mono text-center">
+        ← Swipe canvas or slide to view more certificates • Drag boxes to test elastic path →
       </span>
     </div>
 
@@ -234,5 +301,30 @@ onUnmounted(() => {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Custom CSS Styling for Neon Slider Thumb UI */
+.custom-path-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+.custom-path-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.25);
+}
+.custom-path-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: none;
+  border-radius: 50%;
+  background: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.8);
+  cursor: pointer;
 }
 </style>
