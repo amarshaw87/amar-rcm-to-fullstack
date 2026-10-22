@@ -39,10 +39,10 @@ const buttonClasses = computed(() => {
   ].join(' ');
 });
 
-// Fixed Dynamic SVG Rope Path Generation Logic using explicit array indices
+// Fixed Dynamic SVG Rope Path Generation Logic using safe array length fallback values
 const svgPath = computed(() => {
   const nodes = certificates.value;
-  if (!nodes || nodes.length === 0) return 'M 10,120 L 1800,120';
+  if (!nodes || nodes.length < 3) return 'M 10,120 L 1800,120';
   
   const y0 = 120 + (nodes[0]?.offsetY || 0);
   const y1 = 120 + (nodes[1]?.offsetY || 0);
@@ -172,7 +172,7 @@ onUnmounted(() => {
 <template>
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
-    <!-- Header -->
+    <!-- Top Decorative Header Section -->
     <div class="text-center mt-2">
       <span class="text-[10px] font-semibold tracking-widest text-[#38bdf8] uppercase">Professional Validation</span>
       <h2 class="text-xl md:text-2xl font-bold mt-0.5 text-white tracking-tight drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
@@ -183,7 +183,7 @@ onUnmounted(() => {
       </p>
     </div>
 
-    <!-- Draggable Canvas -->
+    <!-- Draggable Flowchart Canvas Area Wrapper -->
     <div 
       ref="sliderContainer"
       @scroll="handleCanvasScrollSync"
@@ -218,7 +218,7 @@ onUnmounted(() => {
         </defs>
       </svg>
 
-      <!-- Layout Grid Layer -->
+      <!-- Node Track Rendering Layout Grid Layer -->
       <div class="flex items-start space-x-12 md:space-x-16 relative z-10 px-4 w-max pt-6">
         <div 
           v-for="(node, index) in certificates" 
@@ -231,7 +231,7 @@ onUnmounted(() => {
           class="flex flex-col items-center w-36 md:w-44 text-center shrink-0 snap-center select-none"
         >
           
-          <!-- Node Container Box -->
+          <!-- Flexible Individual Square Node Icon -->
           <div
             @mousedown="(e) => startNodeDrag(e, node.id)"
             @touchstart="(e) => startNodeDrag(e, node.id)"
@@ -242,11 +242,11 @@ onUnmounted(() => {
               0{{ index + 1 }}
             </div>
             
-            <!-- OFFICIAL BRAND-ACCURATE META INFINITY SVG LOGO -->
-            <svg class="w-8 h-8 md:w-10 md:h-10 pointer-events-none select-none" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-              <path d="M16.48 7.42c-1.07 0-2.07.47-2.82 1.3-.61-.71-1.46-1.16-2.42-1.25-1.12-.11-2.23.27-3.07 1.03-1.07.97-1.67 2.37-1.67 3.89s.6 2.92 1.67 3.89c.84.76 1.95 1.14 3.07 1.03.96-.09 1.81-.54 2.42-1.25.75.83 1.75 1.3 2.82 1.3 2.21 0 4.02-1.9 4.02-4.24s-1.81-4.24-4.02-4.24zm-6.22 7.02c-.59.05-1.17-.15-1.62-.56-.58-.53-.91-1.3-.91-2.12s.33-1.59.91-2.12c.45-.41 1.03-.61 1.62-.56.59.05 1.12.33 1.46.79.13.18.23.38.29.6.09.32.11.66.07.99-.04.33-.14.65-.3.94-.34.46-.87.74-1.46.79zm6.22.36c-1.22 0-2.22-1.05-2.22-2.34s1-2.34 2.22-2.34 2.22 1.05 2.22 2.34-1 2.34-2.22 2.34z" fill="url(#meta-neon-glow)"/>
+            <!-- OFFICIAL FIXED BRAND-ACCURATE META INFINITY SVG LOGO LAYER -->
+            <svg class="w-8 h-8 md:w-10 md:h-10 pointer-events-none select-none overflow-visible" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
+              <path d="M16.48 7.42c-1.07 0-2.07.47-2.82 1.3-.61-.71-1.46-1.16-2.42-1.25-1.12-.11-2.23.27-3.07 1.03-1.07.97-1.67 2.37-1.67 3.89s.6 2.92 1.67 3.89c.84.76 1.95 1.14 3.07 1.03./96-.09 1.81-.54 2.42-1.25.75.83 1.75 1.3 2.82 1.3 2.21 0 4.02-1.9 4.02-4.24s-1.81-4.24-4.02-4.24zm-6.22 7.02c-.59.05-1.17-.15-1.62-.56-.58-.53-.91-1.3-.91-2.12s.33-1.59.91-2.12c.45-.41 1.03-.61 1.62-.56.59.05 1.12.33 1.46.79.13.18.23.38.29.6.09.32.11.66.07.99-.04.33-.14.65-.3.94-.34.46-.87.74-1.46.79zm6.22.36c-1.22 0-2.22-1.05-2.22-2.34s1-2.34 2.22-2.34 2.22 1.05 2.22 2.34-1 2.34-2.22 2.34z" fill="url(#meta-neon-glow-final)"/>
               <defs>
-                <linearGradient id="meta-neon-glow" x1="4" y1="7" x2="20" y2="17" gradientUnits="userSpaceOnUse">
+                <linearGradient id="meta-neon-glow-final" x1="4" y1="7" x2="20" y2="17" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#0064E0" />
                   <stop offset="50%" stop-color="#38bdf8" />
                   <stop offset="100%" stop-color="#00f3ff" />
@@ -255,7 +255,7 @@ onUnmounted(() => {
             </svg>
           </div>
 
-          <!-- Text Block Content Area -->
+          <!-- Unified Dragging Text Block Content -->
           <div class="mt-4 flex flex-col items-center w-full relative z-30">
             <button
               @click="openCertificate(node.link)"
