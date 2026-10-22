@@ -2,7 +2,7 @@
 import { ref, computed, onUnmounted } from 'vue';
 import { certificatesData } from './certificatesData';
 
-// Reactive instance references matching your split design configuration pattern
+// Reactive nodes reference configuration pattern
 const certificates = ref(
   certificatesData.map(node => ({
     id: node.id,
@@ -29,7 +29,7 @@ const nodeStartY = ref(0);
 const isNodeDragging = ref(false);
 const isResetting = ref(false);
 
-// Long Tailwind utility classes array split into a structured computed property
+// Clean Tailwind classes separation wrapper array
 const buttonClasses = computed(() => {
   return [
     'text-[11px] md:text-xs font-semibold tracking-wide text-slate-100',
@@ -39,9 +39,12 @@ const buttonClasses = computed(() => {
   ].join(' ');
 });
 
-// Dynamic SVG elastic path calculation system
+// FIXED DYNAMIC SVG ROPE PATH GENERATION LOGIC
 const svgPath = computed(() => {
   const nodes = certificates.value;
+  if (!nodes || nodes.length === 0) return 'M 10,120 L 1800,120';
+
+  // Individual safe indexed array offsets dynamically evaluated
   const y0 = 120 + (nodes[0]?.offsetY || 0);
   const y1 = 120 + (nodes[1]?.offsetY || 0);
   const y2 = 120 + (nodes[2]?.offsetY || 0);
