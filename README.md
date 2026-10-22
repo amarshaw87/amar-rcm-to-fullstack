@@ -10,7 +10,10 @@ An executive-level interactive presentation platform and portfolio built with **
 - **7 Dedicated Modular Slides**:
   - `src/slides/1-hero/`: Profile photo, core value proposition, and key domain metrics.
   - `src/slides/2-career/`: 5+ years track record (RCM Workshop, Value RCM, Sunknowledge, Fusion BPO).
-  - `src/slides/3-projects/`: Healthcare RCM Dashboard (React), Claims Code Audit Automation (Python), and this Pitch-Deck.
+  - `src/slides/3-projects/`: Specialized Healthcare Software Suite:
+    - **Prior Auth Initiation & Approval Engine** (React/JS full-stack web app resolving US RCM operational barriers, processing 50+ daily accounts).
+    - **AR Caller Pro** (React/JS web workspace optimizing rigid IVR phone trees and CARC/RARC rejection tracking).
+    - **Remit-X-Matrix Engine** (Enterprise client-side EDI 835 Electronic Remittance Advice sandbox decoder built with Vue 3 & TypeScript).
   - `src/slides/4-cost-roi/`: Interactive live ROI & startup cost savings simulator.
   - `src/slides/5-meta-certs/`: Professional validation displaying Meta Front-End Engineering Pathway, interactive elastic paths, and course verification tokens.
   - `src/slides/6-tech-stack/`: Frontend, Backend, and Healthcare Domain skill matrix.
