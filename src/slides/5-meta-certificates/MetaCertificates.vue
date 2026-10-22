@@ -2,27 +2,16 @@
 import { ref, onUnmounted } from 'vue';
 import { certificatesData } from './certificatesData';
 
-// Strong type interface matching certificates model data definition
-interface CertificateNode {
-  id: number;
-  title: string;
-  duration: string;
-  credentialId: string;
-  link: string;
-  offsetX: number;
-  offsetY: number;
-}
-
-// Strictly typed array mapping instance for reactive certificates data tracking
-const certificates = ref<CertificateNode[]>(
+// Stripped local reactive wrapper structure to match exact PhysicsCertificateNode definition
+const certificates = ref(
   certificatesData.map(node => ({
     id: node.id,
     title: node.title,
     duration: node.duration,
     credentialId: node.credentialId,
     link: node.link,
-    offsetX: 0,
-    offsetY: 0
+    offsetX: node.offsetX || 0,
+    offsetY: node.offsetY || 0
   }))
 );
 
@@ -67,7 +56,6 @@ const startCanvasDrag = (e: MouseEvent | TouchEvent) => {
   if (isNodeDragging.value || !sliderContainer.value) return;
   isCanvasDragging.value = true;
   
-  // FIXED: Standard array element extraction for dynamic cross-device TouchList mapping
   const pageX = e instanceof MouseEvent ? e.pageX : (e.touches && e.touches[0] ? e.touches[0].pageX : 0);
   startCanvasX.value = pageX - sliderContainer.value.offsetLeft;
   canvasScrollLeft.value = sliderContainer.value.scrollLeft;
@@ -77,7 +65,6 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
   if (isNodeDragging.value && activeNodeId.value !== null) {
     e.preventDefault();
     
-    // FIXED: Strict safety boundaries applied onto mobile cursor data objects
     const currentX = e instanceof MouseEvent ? e.clientX : (e.touches && e.touches[0] ? e.touches[0].clientX : 0);
     const currentY = e instanceof MouseEvent ? e.clientY : (e.touches && e.touches[0] ? e.touches[0].clientY : 0);
     
@@ -172,7 +159,6 @@ onUnmounted(() => {
 });
 </script>
 <template>
-  <!-- Background panel color scheme adjusted to match Healthcare Project Card tone perfectly -->
   <section class="relative w-full h-full flex flex-col justify-between items-center bg-gradient-to-b from-[#0a111e] to-[#0c192c] border border-slate-800/40 rounded-2xl text-white overflow-hidden p-4 select-none shadow-2xl backdrop-blur-md">
     
     <!-- Top Decorative Header Section -->
@@ -202,7 +188,6 @@ onUnmounted(() => {
     >
       
       <!-- DYNAMIC SVG ROPE GENERATOR LAYER -->
-      <!-- FIXED: Template absolute runtime index safety interpolation mapping expressions -->
       <svg class="absolute left-0 top-0 h-full w-[1800px] pointer-events-none z-0" xmlns="http://w3.org">
         <path 
           :d="`
@@ -285,7 +270,6 @@ onUnmounted(() => {
     <!-- Bottom UX Interface Controller Panel -->
     <div class="mb-2 flex flex-col items-center space-y-3 w-full max-w-xs">
       
-      <!-- Symbol '🎯' Completely Removed from Text String -->
       <button 
         @click="resetView"
         class="px-4 py-1.5 text-[10px] font-semibold tracking-widest text-[#38bdf8] border border-[#38bdf8]/30 rounded-full bg-[#38bdf8]/5 hover:bg-[#38bdf8] hover:text-[#060b13] hover:shadow-[0_0_15px_rgba(56,189,248,0.4)] transition-all duration-300 uppercase transform active:scale-95 cursor-pointer"
