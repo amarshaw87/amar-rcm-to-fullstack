@@ -39,7 +39,7 @@ const buttonClasses = computed(() => {
   ].join(' ');
 });
 
-// Fixed Dynamic SVG Rope Path Generation Logic using safe array length fallback values
+// Fixed Dynamic SVG Rope Path Generation Logic using safe explicit array indices
 const svgPath = computed(() => {
   const nodes = certificates.value;
   if (!nodes || nodes.length < 3) return 'M 10,120 L 1800,120';
@@ -242,9 +242,9 @@ onUnmounted(() => {
               0{{ index + 1 }}
             </div>
             
-            <!-- OFFICIAL FIXED BRAND-ACCURATE META INFINITY SVG LOGO LAYER -->
+            <!-- OFFICIAL HIGH-DEFINITION META INFINITY GRADIENT SVG LOGO -->
             <svg class="w-8 h-8 md:w-10 md:h-10 pointer-events-none select-none overflow-visible" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
-              <path d="M16.48 7.42c-1.07 0-2.07.47-2.82 1.3-.61-.71-1.46-1.16-2.42-1.25-1.12-.11-2.23.27-3.07 1.03-1.07.97-1.67 2.37-1.67 3.89s.6 2.92 1.67 3.89c.84.76 1.95 1.14 3.07 1.03./96-.09 1.81-.54 2.42-1.25.75.83 1.75 1.3 2.82 1.3 2.21 0 4.02-1.9 4.02-4.24s-1.81-4.24-4.02-4.24zm-6.22 7.02c-.59.05-1.17-.15-1.62-.56-.58-.53-.91-1.3-.91-2.12s.33-1.59.91-2.12c.45-.41 1.03-.61 1.62-.56.59.05 1.12.33 1.46.79.13.18.23.38.29.6.09.32.11.66.07.99-.04.33-.14.65-.3.94-.34.46-.87.74-1.46.79zm6.22.36c-1.22 0-2.22-1.05-2.22-2.34s1-2.34 2.22-2.34 2.22 1.05 2.22 2.34-1 2.34-2.22 2.34z" fill="url(#meta-neon-glow-final)"/>
+              <path d="M16.48 7.42c-1.07 0-2.07.47-2.82 1.3-.61-.71-1.46-1.16-2.42-1.25-1.12-.11-2.23.27-3.07 1.03-1.07.97-1.67 2.37-1.67 3.89s.6 2.92 1.67 3.89c.84.76 1.95 1.14 3.07 1.03 c.96-.09 1.81-.54 2.42-1.25.75.83 1.75 1.3 2.82 1.3 2.21 0 4.02-1.9 4.02-4.24s-1.81-4.24-4.02-4.24zm-6.22 7.02c-.59.05-1.17-.15-1.62-.56-.58-.53-.91-1.3-.91-2.12s.33-1.59.91-2.12c.45-.41 1.03-.61 1.62-.56.59.05 1.12.33 1.46.79.13.18.23.38.29.6.09.32.11.66.07.99-.04.33-.14.65-.3.94-.34.46-.87.74-1.46.79zm6.22.36c-1.22 0-2.22-1.05-2.22-2.34s1-2.34 2.22-2.34 2.22 1.05 2.22 2.34-1 2.34-2.22 2.34z" fill="url(#meta-neon-glow-final)" />
               <defs>
                 <linearGradient id="meta-neon-glow-final" x1="4" y1="7" x2="20" y2="17" gradientUnits="userSpaceOnUse">
                   <stop offset="0%" stop-color="#0064E0" />
