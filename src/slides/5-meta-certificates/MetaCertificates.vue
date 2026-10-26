@@ -173,7 +173,7 @@ onUnmounted(() => {
       <div class="flex flex-col items-center justify-center space-y-0.5">
         <span class="text-[10px] font-semibold tracking-widest text-[#38bdf8] uppercase">Professional Validation</span>
         <h2 class="text-lg md:text-xl font-bold text-white tracking-tight drop-shadow-[0_0_15px_rgba(56,189,248,0.3)] px-4">
-          Meta Full-Stack Developer Professional Certificate
+          Meta Full Stack Developer: Front-End & Back-End from Scratch
         </h2>
         <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2.5 py-0.5 rounded-full animate-pulse mt-1">
           In Progress
