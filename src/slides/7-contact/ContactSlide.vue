@@ -12,20 +12,21 @@
       <a
         href="/Amar_Shaw_Resume.pdf"
         download="Amar_Shaw_Resume.pdf"
-        class="relative inline-flex items-center justify-center px-4 py-2 text-[11px] font-bold font-mono tracking-wider text-sky-400 uppercase rounded-full bg-slate-950/80 hover:text-white transition-colors duration-300 group/btn border border-sky-500/20 overflow-hidden shrink-0 mt-1 shadow-[0_0_15px_rgba(14,165,233,0.1)]"
+        class="relative inline-flex items-center justify-center px-4 py-2 text-[11px] font-bold font-mono tracking-wider text-sky-400 uppercase rounded-full bg-slate-950/90 hover:text-white transition-colors duration-300 group/btn border border-sky-500/30 shrink-0 mt-1"
       >
-        <!-- Orbiting Track / Mask Container -->
-        <span class="absolute inset-0 w-full h-full rounded-full overflow-hidden pointer-events-none">
-          <!-- The Rotating Glowing Dot (The Planet) -->
-          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[40%] bg-gradient-to-r from-transparent via-sky-400 to-transparent blur-[2px] opacity-70 animate-[orbit_4s_linear_infinite] group-hover/btn:animate-[orbit_1.5s_linear_infinite]"></span>
+        <!-- Orbiting Radial Glow Ring (Placed behind/around the button edges) -->
+        <span class="absolute -inset-[2px] rounded-full overflow-hidden pointer-events-none z-0">
+          <!-- The Orbiting Planet Beam (Wider aspect to guarantee clear edge sweeping) -->
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[50%] bg-gradient-to-r from-transparent via-sky-400 to-transparent opacity-90 blur-[3px] animate-[orbit_3s_linear_infinite] group-hover/btn:animate-[orbit_1.2s_linear_infinite]"></span>
         </span>
-        <!-- Inner Mask Layer to keep the background clean -->
-        <span class="absolute inset-[1px] bg-slate-950 rounded-full group-hover/btn:bg-slate-900/90 transition-colors z-0"></span>
+
+        <!-- Inner Structural Mask to maintain dark text backing contrast -->
+        <span class="absolute inset-[1px] bg-slate-950 rounded-full group-hover/btn:bg-slate-900/90 transition-colors z-10"></span>
         
-        <!-- Button Text Label -->
-        <span class="relative z-10 flex items-center gap-1.5">
+        <!-- Button Interactive Text Label -->
+        <span class="relative z-20 flex items-center gap-1.5">
           Resume
-          <span class="text-[9px] opacity-60 font-sans">↓</span>
+          <span class="text-[9px] opacity-70 font-sans font-normal">↓</span>
         </span>
       </a>
     </div>
