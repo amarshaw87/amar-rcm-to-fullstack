@@ -20,7 +20,8 @@
             : 'bg-white/5 text-slate-300 hover:bg-white/10 border border-white/5'
         ]"
       >
-        {{ proj.name.split(' ')[0] }} {{ proj.name.split(' ')[1] }}
+        <!-- Renders clean, concise shortened tab button names -->
+        {{ proj.id === 'prior-auth-engine' ? 'Prior Auth' : proj.id === 'ar-caller-pro' ? 'AR Caller' : 'Remit-X-Matrix' }}
       </button>
     </div>
 
@@ -32,7 +33,7 @@
           <div class="flex items-center gap-1.5">
             <!-- Dynamic Active Development Status Flag Badge -->
             <span 
-              v-if="currentProject.name === 'AR Caller Pro'" 
+              v-if="currentProject.id === 'ar-caller-pro'" 
               class="inline-flex items-center gap-1 text-[9px] font-mono tracking-wide px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold uppercase"
             >
               <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
