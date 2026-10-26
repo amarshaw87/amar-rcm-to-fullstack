@@ -47,7 +47,11 @@
             {{ c.value }}
           </div>
         </div>
-        <span class="text-sky-400 text-sm font-bold ml-2 transition-transform group-hover:translate-x-1">&nearr;</span>
+        <img 
+          :src="'/' + c.type.toLowerCase() + '-icon.svg'" 
+          :alt="c.type" 
+          class="w-5 h-5 ml-2 object-contain transition-all duration-200 group-hover:scale-110 brightness-0 invert [filter:invert(65%)_sepia(87%)_saturate(483%)_hue-rotate(167deg)_brightness(101%)_contrast(97%)]"
+        />
       </a>
     </div>
 
