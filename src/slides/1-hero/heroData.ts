@@ -4,6 +4,7 @@ export const heroData: HeroData = {
   name: "Amar Shaw",
   headline: "Full-Stack Developer & US Healthcare RCM Specialist",
   tagline: "Bridging 5+ years of international operations, US healthcare prior authorization, denial management, and billing operations with modern full-stack web engineering.",
+  location: "Kolkata, West Bengal, India",
   stats: [
     { value: "5+ Years", label: "Overall Track Record", detail: "Global Ops & RCM Domain" },
     { value: "99.4%", label: "Auth SLA", detail: "Availity, NaviNet & Evicore" },
