@@ -1,10 +1,33 @@
 <template>
   <div class="h-full flex flex-col justify-between">
-    <!-- Header -->
-    <div class="mb-2">
-      <div class="text-[11px] font-mono uppercase tracking-wider text-sky-400">Direct Connect</div>
-      <h2 class="text-xl md:text-2xl font-bold text-white">{{ contactData.title }}</h2>
-      <p class="text-xs text-slate-300">{{ contactData.subtitle }}</p>
+    <!-- Header Container with Top-Right Button Alignment -->
+    <div class="mb-2 flex items-start justify-between gap-4">
+      <div>
+        <div class="text-[11px] font-mono uppercase tracking-wider text-sky-400">Direct Connect</div>
+        <h2 class="text-xl md:text-2xl font-bold text-white">{{ contactData.title }}</h2>
+        <p class="text-xs text-slate-300">{{ contactData.subtitle }}</p>
+      </div>
+
+      <!-- Sci-Fi Orbiting Glow Resume Download Button -->
+      <a
+        href="/Amar_Shaw_Resume.pdf"
+        download="Amar_Shaw_Resume.pdf"
+        class="relative inline-flex items-center justify-center px-4 py-2 text-[11px] font-bold font-mono tracking-wider text-sky-400 uppercase rounded-full bg-slate-950/80 hover:text-white transition-colors duration-300 group/btn border border-sky-500/20 overflow-hidden shrink-0 mt-1 shadow-[0_0_15px_rgba(14,165,233,0.1)]"
+      >
+        <!-- Orbiting Track / Mask Container -->
+        <span class="absolute inset-0 w-full h-full rounded-full overflow-hidden pointer-events-none">
+          <!-- The Rotating Glowing Dot (The Planet) -->
+          <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[180%] h-[40%] bg-gradient-to-r from-transparent via-sky-400 to-transparent blur-[2px] opacity-70 animate-[orbit_4s_linear_infinite] group-hover/btn:animate-[orbit_1.5s_linear_infinite]"></span>
+        </span>
+        <!-- Inner Mask Layer to keep the background clean -->
+        <span class="absolute inset-[1px] bg-slate-950 rounded-full group-hover/btn:bg-slate-900/90 transition-colors z-0"></span>
+        
+        <!-- Button Text Label -->
+        <span class="relative z-10 flex items-center gap-1.5">
+          Resume
+          <span class="text-[9px] opacity-60 font-sans">↓</span>
+        </span>
+      </a>
     </div>
 
     <!-- Contact Grid -->
@@ -13,7 +36,7 @@
         v-for="(c, idx) in contactData.contacts"
         :key="idx"
         :href="c.href"
-        :target="c.href.startsWith('http') ? '_blank' : '_self'"
+        :target="c.href.startsWith('http') || c.href.startsWith('https') ? '_blank' : '_self'"
         rel="noopener noreferrer"
         class="p-3.5 rounded-xl bg-slate-900/60 border border-white/10 hover:border-sky-500/50 hover:bg-sky-500/10 transition-all duration-200 flex items-center justify-between group"
       >
@@ -44,3 +67,15 @@
 <script setup lang="ts">
 import { contactData } from './contactData'
 </script>
+
+<style scoped>
+/* Keyframe definition for the orbiting edge illumination effect */
+@keyframes orbit {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+</style>
