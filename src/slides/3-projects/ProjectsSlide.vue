@@ -29,9 +29,19 @@
       <div>
         <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
           <h3 class="text-base md:text-lg font-bold text-white">{{ currentProject.name }}</h3>
-          <span class="text-[10px] md:text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800">
-            {{ currentProject.badge }}
-          </span>
+          <div class="flex items-center gap-1.5">
+            <!-- Dynamic Active Development Status Flag Badge -->
+            <span 
+              v-if="currentProject.name === 'AR Caller Pro'" 
+              class="inline-flex items-center gap-1 text-[9px] font-mono tracking-wide px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/30 font-bold uppercase"
+            >
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+              Development In Progress
+            </span>
+            <span class="text-[10px] md:text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800">
+              {{ currentProject.badge }}
+            </span>
+          </div>
         </div>
         
         <div class="text-xs font-mono text-sky-400 mb-2">{{ currentProject.tech }}</div>
