@@ -11,7 +11,8 @@ const certificates = ref(
     credentialId: node.credentialId,
     link: node.link,
     offsetX: node.offsetX || 0,
-    offsetY: node.offsetY || 0
+    offsetY: node.offsetY || 0,
+    status: (node as any).status || 'completed'
   }))
 );
 
@@ -39,26 +40,21 @@ const buttonClasses = computed(() => {
   ].join(' ');
 });
 
-// Fixed Dynamic SVG Rope Path Generation Logic using safe explicit array indices
+// Fixed Dynamic SVG Rope Path Generation Logic using all active data array indices
 const svgPath = computed(() => {
   const nodes = certificates.value;
-  if (!nodes || nodes.length < 3) return 'M 10,120 L 1800,120';
+  if (!nodes || nodes.length < 3) return 'M 10,120 L 2400,120';
   
-  const y0 = 120 + (nodes[0]?.offsetY || 0);
-  const y1 = 120 + (nodes[1]?.offsetY || 0);
-  const y2 = 120 + (nodes[2]?.offsetY || 0);
-  const y3 = 120 + (nodes[3]?.offsetY || 0);
-  const y4 = 120 + (nodes[4]?.offsetY || 0);
-
-  return `
-    M 10,120 
-    Q 80,${y0} 160,${y0} 
-    C 240,${y1} 240,${y1} 320,${y1}
-    C 400,${y2} 400,${y2} 480,${y2}
-    C 560,${y3} 560,${y3} 640,${y3}
-    C 720,${y4} 720,${y4} 800,${y4}
-    L 1800,120
-  `;
+  let pathStr = `M 10,120`;
+  nodes.forEach((node, idx) => {
+    const startX = idx * 160 + 80;
+    const endX = (idx + 1) * 160 + 80;
+    const yVal = 120 + (node.offsetY || 0);
+    pathStr += ` Q ${startX},${yVal} ${endX},120`;
+  });
+  
+  pathStr += ` L 2400,120`;
+  return pathStr;
 });
 
 // --- DYNAMIC SLIDER TRACKING SYSTEM ---
@@ -148,7 +144,7 @@ const startNodeDrag = (e: MouseEvent | TouchEvent, nodeId: number) => {
 };
 
 const openCertificate = (url: string) => {
-  if (isCanvasDragging.value || isNodeDragging.value) return; 
+  if (url === '#' || isCanvasDragging.value || isNodeDragging.value) return; 
   window.open(url, '_blank', 'noopener,noreferrer');
 };
 
@@ -174,12 +170,17 @@ onUnmounted(() => {
     
     <!-- Top Decorative Header Section -->
     <div class="text-center mt-2">
-      <span class="text-[10px] font-semibold tracking-widest text-[#38bdf8] uppercase">Professional Validation</span>
-      <h2 class="text-xl md:text-2xl font-bold mt-0.5 text-white tracking-tight drop-shadow-[0_0_15px_rgba(56,189,248,0.3)]">
-        Meta Front-End Engineering Pathway
-      </h2>
-      <p class="text-[11px] text-slate-400 mt-0.5 max-w-md mx-auto">
-        Hold & drag square icons to stretch the dynamic elastic path. Click course text links to verify tokens.
+      <div class="flex flex-col items-center justify-center space-y-0.5">
+        <span class="text-[10px] font-semibold tracking-widest text-[#38bdf8] uppercase">Professional Validation</span>
+        <h2 class="text-lg md:text-xl font-bold text-white tracking-tight drop-shadow-[0_0_15px_rgba(56,189,248,0.3)] px-4">
+          Meta Full-Stack Developer Professional Certificate
+        </h2>
+        <span class="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-400 bg-sky-500/10 border border-sky-500/20 px-2.5 py-0.5 rounded-full animate-pulse mt-1">
+          In Progress
+        </span>
+      </div>
+      <p class="text-[11px] text-slate-400 mt-1.5 max-w-xl mx-auto px-4">
+        Hold & drag square icons to stretch the dynamic elastic path. Click active course text links to verify tokens.
       </p>
     </div>
 
@@ -199,7 +200,7 @@ onUnmounted(() => {
     >
       
       <!-- DYNAMIC SVG ROPE GENERATOR LAYER -->
-      <svg class="absolute left-0 top-0 h-full w-[1800px] pointer-events-none z-0" xmlns="http://w3.org">
+      <svg class="absolute left-0 top-0 h-full w-[2400px] pointer-events-none z-0" xmlns="http://w3.org">
         <path 
           :d="svgPath"
           fill="none"
@@ -235,37 +236,51 @@ onUnmounted(() => {
           <div
             @mousedown="(e) => startNodeDrag(e, node.id)"
             @touchstart="(e) => startNodeDrag(e, node.id)"
-            :class="[isNodeDragging && activeNodeId === node.id ? 'scale-105 cursor-grabbing border-[#38bdf8] shadow-[0_0_25px_rgba(56,189,248,0.5)]' : 'cursor-grab hover:border-[#38bdf8]/70 hover:shadow-[0_0_15px_rgba(56,189,248,0.2)]']"
-            class="w-14 h-14 md:w-16 md:h-16 bg-slate-900 border border-slate-700 rounded-xl flex items-center justify-center relative shadow-xl transition-all duration-200 ease-out"
+            :class="[
+              isNodeDragging && activeNodeId === node.id ? 'scale-105 border-[#38bdf8] shadow-[0_0_25px_rgba(56,189,248,0.5)]' : '',
+              node.status === 'completed' ? 'border-slate-700 bg-slate-900 hover:border-[#38bdf8]/70 hover:shadow-[0_0_15px_rgba(56,189,248,0.2)]' : '',
+              node.status === 'in-progress' ? 'border-sky-500/50 bg-sky-950/40 shadow-[0_0_15px_rgba(14,165,233,0.15)] animate-pulse' : '',
+              node.status === 'upcoming' ? 'border-slate-800 bg-slate-950/20 opacity-50' : ''
+            ]"
+            class="w-14 h-14 md:w-16 md:h-16 border rounded-xl flex items-center justify-center relative shadow-xl transition-all duration-200 ease-out cursor-grab"
           >
-            <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-[#38bdf8] text-[#060b13] text-[9px] font-black rounded-full flex items-center justify-center shadow-md select-none pointer-events-none">
+            <div 
+              :class="[
+                node.status === 'completed' ? 'bg-[#38bdf8] text-[#060b13]' : '',
+                node.status === 'in-progress' ? 'bg-amber-500 text-slate-950' : '',
+                node.status === 'upcoming' ? 'bg-slate-700 text-slate-400' : ''
+              ]"
+              class="absolute -top-1.5 -right-1.5 w-4 h-4 text-[9px] font-black rounded-full flex items-center justify-center shadow-md select-none pointer-events-none"
+            >
               0{{ index + 1 }}
             </div>
             
-            <!-- OFFICIAL HIGH-DEFINITION META INFINITY GRADIENT SVG LOGO -->
             <svg class="w-8 h-8 md:w-10 md:h-10 pointer-events-none select-none overflow-visible" viewBox="0 0 24 24" fill="none" xmlns="http://w3.org">
               <path d="M16.48 7.42c-1.07 0-2.07.47-2.82 1.3-.61-.71-1.46-1.16-2.42-1.25-1.12-.11-2.23.27-3.07 1.03-1.07.97-1.67 2.37-1.67 3.89s.6 2.92 1.67 3.89c.84.76 1.95 1.14 3.07 1.03 c.96-.09 1.81-.54 2.42-1.25.75.83 1.75 1.3 2.82 1.3 2.21 0 4.02-1.9 4.02-4.24s-1.81-4.24-4.02-4.24zm-6.22 7.02c-.59.05-1.17-.15-1.62-.56-.58-.53-.91-1.3-.91-2.12s.33-1.59.91-2.12c.45-.41 1.03-.61 1.62-.56.59.05 1.12.33 1.46.79.13.18.23.38.29.6.09.32.11.66.07.99-.04.33-.14.65-.3.94-.34.46-.87.74-1.46.79zm6.22.36c-1.22 0-2.22-1.05-2.22-2.34s1-2.34 2.22-2.34 2.22 1.05 2.22 2.34-1 2.34-2.22 2.34z" fill="url(#meta-neon-glow-final)" />
               <defs>
                 <linearGradient id="meta-neon-glow-final" x1="4" y1="7" x2="20" y2="17" gradientUnits="userSpaceOnUse">
-                  <stop offset="0%" stop-color="#0064E0" />
-                  <stop offset="50%" stop-color="#38bdf8" />
-                  <stop offset="100%" stop-color="#00f3ff" />
+                  <stop offset="0%" :stop-color="node.status === 'upcoming' ? '#475569' : '#0064E0'" />
+                  <stop offset="50%" :stop-color="node.status === 'upcoming' ? '#64748b' : '#38bdf8'" />
+                  <stop offset="100%" :stop-color="node.status === 'upcoming' ? '#94a3b8' : '#00f3ff'" />
                 </linearGradient>
               </defs>
             </svg>
           </div>
 
-          <!-- Unified Dragging Text Block Content -->
           <div class="mt-4 flex flex-col items-center w-full relative z-30">
             <button
               @click="openCertificate(node.link)"
               @mousedown.stop
               @touchstart.stop
-              :class="buttonClasses"
+              :disabled="node.link === '#'"
+              :class="[buttonClasses, node.link === '#' ? 'no-underline cursor-default hover:text-slate-100' : '']"
             >
               {{ node.title }}
             </button>
-            <span class="text-[9px] text-slate-500 font-mono tracking-wider mt-1 block uppercase pointer-events-none select-none">
+            <span 
+              :class="[node.status === 'in-progress' ? 'text-amber-400 font-bold' : 'text-slate-500']"
+              class="text-[9px] font-mono tracking-wider mt-1 block uppercase pointer-events-none select-none"
+            >
               ⏱️ {{ node.duration }}
             </span>
             <span class="text-[8px] text-slate-600 font-mono tracking-tight mt-0.5 block truncate max-w-[100px] pointer-events-none select-none">
@@ -277,7 +292,6 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <!-- Bottom UX Interface Controller Panel -->
     <div class="mb-2 flex flex-col items-center space-y-3 w-full max-w-xs">
       <button 
         @click="resetView"
