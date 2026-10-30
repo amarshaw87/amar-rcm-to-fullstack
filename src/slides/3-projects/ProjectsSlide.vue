@@ -21,7 +21,12 @@
         ]"
       >
         <!-- Renders clean, concise shortened tab button names -->
-        {{ proj.id === 'prior-auth-engine' ? 'Prior Auth' : proj.id === 'ar-caller-pro' ? 'AR Caller' : 'Remit-X-Matrix' }}
+        {{ 
+          proj.id === 'prior-auth-engine' ? 'Prior Auth' : 
+          proj.id === 'ar-caller-pro' ? 'AR Caller' : 
+          proj.id === 'remit-x-matrix' ? 'Remit-X-Matrix' : 
+          'CrosswalkIQ' 
+        }}
       </button>
     </div>
 
