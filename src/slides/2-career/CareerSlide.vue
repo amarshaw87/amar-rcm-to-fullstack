@@ -27,8 +27,15 @@
             </span>
           </div>
 
-          <div class="text-xs text-sky-400 font-medium mb-1.5">
-            {{ item.company }} &bull; {{ item.location }}
+          <!-- Company Name with Integrated Logo -->
+          <div class="flex items-center gap-2 text-xs text-sky-400 font-medium mb-1.5">
+            <img 
+              v-if="item.logo"
+              :src="item.logo" 
+              :alt="`${item.company} logo`" 
+              class="w-4 h-4 object-contain rounded-sm"
+            />
+            <span>{{ item.company }} &bull; {{ item.location }}</span>
           </div>
 
           <p class="text-xs text-slate-300 mb-2.5 leading-relaxed">
