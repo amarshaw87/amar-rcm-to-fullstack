@@ -59,25 +59,5 @@
 </template>
 
 <script setup lang="ts">
-import { careerData as rawCareerData } from './careerData'
-
-// Define the exact role interface structure including the optional logo property
-interface Role {
-  period: string
-  role: string
-  company: string
-  logo?: string
-  location: string
-  focus: string
-  skills: string[]
-}
-
-interface CareerDataShape {
-  title: string
-  subtitle: string
-  roles: Role[]
-}
-
-// Explicitly typecast the imported object to bypass shared global interface errors
-const careerData = rawCareerData as CareerDataShape
+import { careerData } from './careerData'
 </script>
