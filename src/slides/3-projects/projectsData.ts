@@ -8,7 +8,7 @@ export const projectsData: ProjectsData = {
       id: "prior-auth-engine",
       name: "Prior Auth Initiation & Approval Engine",
       tech: "React.js • Modern CSS • State Hooks",
-      repo: "https://github.com",
+      repo: "https://github.com/amarshaw87/prior-auth-engine",
       badge: "Full-Stack Web App",
       summary: "Enterprise-grade automation pipeline built to bridge real-world US Healthcare Revenue Cycle Management (RCM) operational bottlenecks with modern front-end engineering.",
       features: [
@@ -59,7 +59,7 @@ export const projectsData: ProjectsData = {
       id: "crosswalk-iq",
       name: "CrosswalkIQ",
       tech: "Vue.js • TypeScript • Vite • Tailwind CSS",
-      repo: "https://github.com",
+      repo: "https://github.com/amarshaw87/CrosswalkIQ",
       badge: "Single-Page Application",
       summary: "Ultra-lightweight, zero-latency medical coding validation and anesthesia crosswalk engine engineered to automate complex prior authorization workflows within US Healthcare RCM operations.",
       features: [
