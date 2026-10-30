@@ -8,7 +8,7 @@ export const projectsData: ProjectsData = {
       id: "prior-auth-engine",
       name: "Prior Auth Initiation & Approval Engine",
       tech: "React.js • Modern CSS • State Hooks",
-      repo: "https://github.com/amarshaw87/prior-auth-engine",
+      repo: "https://github.com",
       badge: "Full-Stack Web App",
       summary: "Enterprise-grade automation pipeline built to bridge real-world US Healthcare Revenue Cycle Management (RCM) operational bottlenecks with modern front-end engineering.",
       features: [
@@ -53,6 +53,24 @@ export const projectsData: ProjectsData = {
       metrics: [
         { label: "Vue / TS Mix", value: "98.7%" },
         { label: "Layout UI", value: "Obsidian Dark" }
+      ]
+    },
+    {
+      id: "crosswalk-iq",
+      name: "CrosswalkIQ",
+      tech: "Vue.js • TypeScript • Vite • Tailwind CSS",
+      repo: "https://github.com",
+      badge: "Single-Page Application",
+      summary: "Ultra-lightweight, zero-latency medical coding validation and anesthesia crosswalk engine engineered to automate complex prior authorization workflows within US Healthcare RCM operations.",
+      features: [
+        "Automates complex multi-level mapping across regional spinal anatomy CPT, ASA, and Diagnosis (DX) code matrices.",
+        "Handles critical dynamic exception loops for specific insurance rules including Humana-exclusive MAC code overrides.",
+        "Enforces strict compile-time validation frameworks via TypeScript to guarantee 100% error-free clean-claim submissions.",
+        "Eliminates interface latency entirely by executing high-velocity data lookups locally within the client browser DOM."
+      ],
+      metrics: [
+        { label: "Deployment", value: "Vercel Global Edge" },
+        { label: "Language", value: "Vue / TS Mix" }
       ]
     }
   ]
