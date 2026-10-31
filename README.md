@@ -31,3 +31,17 @@ An executive-level interactive presentation platform and portfolio built with **
 ## 🚀 Quick Start Guide
 
 ```bash
+# Clone the repository
+git clone [https://github.com/amarshaw87/amar-rcm-to-fullstack.git](https://github.com/amarshaw87/amar-rcm-to-fullstack.git)
+
+# Navigate into directory
+cd amar-rcm-to-fullstack
+
+# Install dependencies
+npm install
+
+# Run local development server
+npm run dev
+
+# Build for production with strict type-checking
+npm run build
