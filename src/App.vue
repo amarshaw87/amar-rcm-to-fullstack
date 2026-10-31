@@ -1,7 +1,7 @@
 <template>
   <div class="app-viewport relative w-screen h-screen overflow-hidden select-none bg-slate-950 font-sans">
     
-    <!-- INTERACTIVE STARFIELD / COSMIC DUST BACKGROUND -->
+    <!-- INTERACTIVE STARFIELD / COSMIC DUST BACKGROUND WITH SHOOTING STARS -->
     <StarfieldBackground />
 
     <!-- TOP HEADER -->
@@ -41,13 +41,19 @@
       </div>
     </header>
 
-    <!-- CENTER GLASS STAGE -->
+    <!-- CENTER GLASS STAGE WITH 3D TILT EFFECT -->
     <main
-      class="relative z-10 w-full h-full flex items-center justify-center px-4 md:px-8 pt-16 pb-20 md:pb-16"
+      class="relative z-10 w-full h-full flex items-center justify-center px-4 md:px-8 pt-16 pb-20 md:pb-16 perspective-1000"
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
-      <div class="w-full max-w-4xl max-h-[82vh] md:max-h-[76vh] rounded-2xl md:rounded-3xl p-5 md:p-8 backdrop-blur-xl bg-slate-900/75 border border-white/15 shadow-2xl shadow-black/80 flex flex-col justify-between overflow-hidden relative">
+      <div 
+        class="w-full max-w-4xl max-h-[82vh] md:max-h-[76vh] rounded-2xl md:rounded-3xl p-5 md:p-8 backdrop-blur-xl bg-slate-900/75 border border-sky-500/30 shadow-2xl shadow-sky-950/50 flex flex-col justify-between overflow-hidden relative transition-transform duration-200 ease-out animate-pulse-glow"
+        @mousemove="handleCardTilt"
+        @mouseleave="resetCardTilt"
+        ref="glassCardRef"
+        :style="cardStyle"
+      >
         <transition :name="transitionName" mode="out-in">
           <component
             :is="slides[currentSlide].component"
@@ -154,6 +160,27 @@ function prevSlide(): void {
   }
 }
 
+// 3D Glass Card Tilt Logic
+const glassCardRef = ref<HTMLElement | null>(null)
+const cardStyle = ref<string>('')
+
+function handleCardTilt(e: MouseEvent) {
+  const card = glassCardRef.value
+  if (!card) return
+  const rect = card.getBoundingClientRect()
+  const x = e.clientX - rect.left - rect.width / 2
+  const y = e.clientY - rect.top - rect.height / 2
+  
+  const rotateX = (-y / 25).toFixed(2)
+  const rotateY = (x / 25).toFixed(2)
+
+  cardStyle.value = `transform: perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01);`
+}
+
+function resetCardTilt() {
+  cardStyle.value = 'transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);'
+}
+
 // Typed Keyboard Navigation
 function handleKeydown(e: KeyboardEvent): void {
   if (e.key === 'ArrowRight' || e.key === 'PageDown') nextSlide()
@@ -195,4 +222,13 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 .slide-next-leave-to { opacity: 0; transform: translateX(-30px) scale(0.98); }
 .slide-prev-enter-from { opacity: 0; transform: translateX(-30px) scale(0.98); }
 .slide-prev-leave-to { opacity: 0; transform: translateX(30px) scale(0.98); }
+
+@keyframes pulseGlow {
+  0%, 100% { border-color: rgba(56, 189, 248, 0.3); box-shadow: 0 0 25px rgba(14, 165, 233, 0.15); }
+  50% { border-color: rgba(56, 189, 248, 0.6); box-shadow: 0 0 35px rgba(56, 189, 248, 0.35); }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s infinite ease-in-out;
+}
 </style>
