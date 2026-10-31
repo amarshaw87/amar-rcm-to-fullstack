@@ -1,18 +1,8 @@
 <template>
   <div class="app-viewport relative w-screen h-screen overflow-hidden select-none bg-slate-950 font-sans">
     
-    <!-- RESPONSIVE BACKGROUND SWITCHER -->
-    <!-- Desktop (16:9 Landscape) -->
-    <div 
-      class="hidden md:block absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
-      style="background-image: url('/backgrounds/bg-desktop.png');"
-    ></div>
-
-    <!-- Mobile (9:16 Portrait) -->
-    <div 
-      class="block md:hidden absolute inset-0 z-0 bg-cover bg-center bg-no-repeat transition-all duration-700"
-      style="background-image: url('/backgrounds/bg-mobile.png');"
-    ></div>
+    <!-- INTERACTIVE STARFIELD / COSMIC DUST BACKGROUND -->
+    <StarfieldBackground />
 
     <!-- TOP HEADER -->
     <header class="absolute top-0 inset-x-0 z-20 h-14 md:h-16 px-4 md:px-8 flex items-center justify-between backdrop-blur-md bg-slate-950/40 border-b border-white/5">
@@ -120,7 +110,10 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { SlideConfig } from './types'
 
-// Import Modular Slides (Configured with newly renamed sequential paths)
+// Import Starfield Background Component
+import StarfieldBackground from './components/StarfieldBackground.vue'
+
+// Import Modular Slides
 import HeroSlide from './slides/1-hero/HeroSlide.vue'
 import CareerSlide from './slides/2-career/CareerSlide.vue'
 import ProjectsSlide from './slides/3-projects/ProjectsSlide.vue'
