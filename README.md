@@ -39,7 +39,7 @@ A professional validation engine displaying the **Meta Full-Stack Developer Prof
 ### 🛠 `src/slides/6-tech-stack/` — Competency Matrix Grid
 A high-contrast 3-column data array architecture neatly dividing expert skill sets across: Frontend Core Architecture, Backend Data Engineering, and specialized US Healthcare Domain Compliance criteria.
 
-### 📨 `src/slides/7-contact/` — Frictionless Frictionless Lead Router
+### 📨 `src/slides/7-contact/` — Frictionless Lead Router
 Direct messaging integration establishing a native communication handshake via automated **WhatsApp API transport channels** alongside an orbiting sci-fi glow interaction container for immediate premium resume asset downloads.
 
 ---
