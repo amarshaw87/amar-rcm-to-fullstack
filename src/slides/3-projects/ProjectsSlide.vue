@@ -35,10 +35,10 @@
         <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
           <h3 class="text-base md:text-lg font-bold text-white flex items-center gap-2">
             {{ currentProject.name }}
-            <!-- Real-World Enterprise Production Badge with Pulsing Ring Layer for CrosswalkIQ Only -->
+            <!-- Rectangle box aur border completely removed. Left with a flat, clean pulsing green link. -->
             <span 
               v-if="currentProject.id === 'crosswalk-iq'" 
-              class="inline-flex items-center gap-1.5 text-[9px] font-mono font-bold tracking-wide px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 uppercase animate-fade-in"
+              class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold tracking-wide text-emerald-400 uppercase animate-fade-in pl-1"
             >
               <span class="relative flex h-2 w-2">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -70,7 +70,6 @@
 
         <!-- Key Features List -->
         <div class="space-y-1.5 mb-2">
-          <!-- Injected Production Validation Bullet Point into the top layer of CrosswalkIQ -->
           <div v-if="currentProject.id === 'crosswalk-iq'" class="flex items-start text-xs text-slate-200 font-medium">
             <span class="text-emerald-400 mr-2 font-bold">&check;</span>
             <span>Successfully deployed in core operations, actively accelerating real-time verification benchmarks for 30+ enterprise team users.</span>
@@ -94,7 +93,6 @@
             <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-mono">{{ metric.label }}</span>
             <span class="text-xs md:text-sm font-bold text-emerald-400">{{ metric.value }}</span>
           </div>
-          <!-- Extended Live Infrastructure Environment Metadata Field -->
           <div v-if="currentProject.id === 'crosswalk-iq'">
             <span class="text-[10px] text-slate-400 uppercase tracking-wider block font-mono">Environment</span>
             <span class="text-xs md:text-sm font-bold text-sky-400">Enterprise Live</span>
