@@ -70,7 +70,7 @@ export const projectsData: ProjectsData = {
       ],
       metrics: [
         { label: "Deployment", value: "Vercel Global Edge" },
-        { label: "Language", value: "Vue / TS Mix" }
+        { label: "Team Size", value: "30+ Active Users" } // Elevated active team count validation metric
       ]
     }
   ]
