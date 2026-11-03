@@ -12,7 +12,9 @@ const certificates = ref(
     link: node.link,
     offsetX: node.offsetX || 0,
     offsetY: node.offsetY || 0,
-    status: (node as any).status || 'completed'
+    status: (node as any).status || 'completed',
+    vx: 0, // Spring Velocity Tracker X
+    vy: 0  // Spring Velocity Tracker Y
   }))
 );
 
@@ -30,6 +32,11 @@ const nodeStartY = ref(0);
 const isNodeDragging = ref(false);
 const isResetting = ref(false);
 
+// Physics Constants for Spring-Mass Simulation Engine
+const SPRING_STIFFNESS = 0.18;
+const SPRING_DAMPING = 0.76;
+let physicsLoopId: number | null = null;
+
 // Clean Tailwind classes separation wrapper array
 const buttonClasses = computed(() => {
   return [
@@ -40,22 +47,85 @@ const buttonClasses = computed(() => {
   ].join(' ');
 });
 
-// Fixed Dynamic SVG Rope Path Generation Logic using all active data array indices
+// Fixed Dynamic SVG Rope Path Generation Logic using active bouncing metrics
 const svgPath = computed(() => {
   const nodes = certificates.value;
-  if (!nodes || nodes.length < 3) return 'M 10,120 L 2400,120';
+  if (!nodes || nodes.length === 0) return 'M 10,120 L 2400,120';
   
   let pathStr = `M 10,120`;
   nodes.forEach((node, idx) => {
-    const startX = idx * 160 + 80;
-    const endX = (idx + 1) * 160 + 80;
-    const yVal = 120 + (node.offsetY || 0);
-    pathStr += ` Q ${startX},${yVal} ${endX},120`;
+    const nodeDefaultX = idx * 160 + 80;
+    const currentActualX = nodeDefaultX + node.offsetX;
+    const currentActualY = 120 + node.offsetY;
+
+    // Calculate midpoint targets for high accuracy curve linking segments
+    if (idx === 0) {
+      pathStr += ` Q ${(10 + currentActualX) / 2},${(120 + currentActualY) / 2} ${currentActualX},${currentActualY}`;
+    } else {
+      const prevDefaultX = (idx - 1) * 160 + 80;
+      const prevActualX = prevDefaultX + nodes[idx - 1].offsetX;
+      const prevActualY = 120 + nodes[idx - 1].offsetY;
+      
+      const midX = (prevActualX + currentActualX) / 2;
+      const midY = (prevActualY + currentActualY) / 2;
+      pathStr += ` Q ${prevActualX},${prevActualY} ${midX},${midY}`;
+    }
+    
+    if (idx === nodes.length - 1) {
+      pathStr += ` Q ${(currentActualX + 2400) / 2},${(currentActualY + 120) / 2} 2400,120`;
+    }
   });
   
-  pathStr += ` L 2400,120`;
   return pathStr;
 });
+
+// --- SPRING PHYSICS ENGINE ANIMATION SYSTEM ---
+const runSpringPhysicsSimulation = () => {
+  if (isResetting.value) return;
+
+  let hasActiveMotion = false;
+
+  certificates.value.forEach((node) => {
+    // If the node is currently handled by user drag mechanics, bypass physics acceleration updates
+    if (isNodeDragging.value && activeNodeId.value === node.id) {
+      node.vx = 0;
+      node.vy = 0;
+      return;
+    }
+
+    // Hooke's Law: Acceleration proportional to distance displacement metrics from center target (0,0)
+    const ax = -node.offsetX * SPRING_STIFFNESS;
+    const ay = -node.offsetY * SPRING_STIFFNESS;
+
+    node.vx = (node.vx + ax) * SPRING_DAMPING;
+    node.vy = (node.vy + ay) * SPRING_DAMPING;
+
+    node.offsetX += node.vx;
+    node.offsetY += node.vy;
+
+    // Maintain running frames loop active tracking limits if resting precision isn't reached yet
+    if (Math.abs(node.offsetX) > 0.01 || Math.abs(node.offsetY) > 0.01 || Math.abs(node.vx) > 0.01 || Math.abs(node.vy) > 0.01) {
+      hasActiveMotion = true;
+    } else if (!isNodeDragging.value) {
+      node.offsetX = 0;
+      node.offsetY = 0;
+      node.vx = 0;
+      node.vy = 0;
+    }
+  });
+
+  if (hasActiveMotion || isNodeDragging.value) {
+    physicsLoopId = requestAnimationFrame(runSpringPhysicsSimulation);
+  } else {
+    physicsLoopId = null;
+  }
+};
+
+const triggerPhysicsUpdateLoop = () => {
+  if (!physicsLoopId) {
+    physicsLoopId = requestAnimationFrame(runSpringPhysicsSimulation);
+  }
+};
 
 // --- DYNAMIC SLIDER TRACKING SYSTEM ---
 const handleCanvasScrollSync = () => {
@@ -98,6 +168,7 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
       certificates.value[activeIndex].offsetX = deltaX;
       certificates.value[activeIndex].offsetY = deltaY;
       
+      // Propagate dragging wave metrics to neighbor elements cleanly
       for (let i = activeIndex - 1; i >= 0; i--) {
         const dampFactor = Math.pow(0.45, activeIndex - i); 
         certificates.value[i].offsetX = deltaX * dampFactor;
@@ -109,6 +180,7 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
         certificates.value[i].offsetY = deltaY * dampFactor;
       }
     }
+    triggerPhysicsUpdateLoop();
     return;
   }
 
@@ -124,8 +196,11 @@ const handleGlobalDragging = (e: MouseEvent | TouchEvent) => {
 };
 
 const stopGlobalDrag = () => {
+  if (isNodeDragging.value) {
+    isNodeDragging.value = false;
+    triggerPhysicsUpdateLoop(); // Start vibrations immediately on structural nodes drag release
+  }
   isCanvasDragging.value = false;
-  isNodeDragging.value = false;
   activeNodeId.value = null;
 };
 
@@ -141,6 +216,7 @@ const startNodeDrag = (e: MouseEvent | TouchEvent, nodeId: number) => {
     nodeStartX.value = clientX - targetNode.offsetX;
     nodeStartY.value = clientY - targetNode.offsetY;
   }
+  triggerPhysicsUpdateLoop();
 };
 
 const openCertificate = (url: string) => {
@@ -149,10 +225,16 @@ const openCertificate = (url: string) => {
 };
 
 const resetView = () => {
+  if (physicsLoopId) {
+    cancelAnimationFrame(physicsLoopId);
+    physicsLoopId = null;
+  }
   isResetting.value = true;
   certificates.value.forEach(node => {
     node.offsetX = 0;
     node.offsetY = 0;
+    node.vx = 0;
+    node.vy = 0;
   });
   scrollProgress.value = 0;
   if (sliderContainer.value) {
@@ -163,6 +245,7 @@ const resetView = () => {
 
 onUnmounted(() => {
   stopGlobalDrag();
+  if (physicsLoopId) cancelAnimationFrame(physicsLoopId);
 });
 </script>
 <template>
@@ -319,7 +402,6 @@ onUnmounted(() => {
 
   </section>
 </template>
-
 <style scoped>
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
