@@ -41,16 +41,16 @@
       </div>
     </header>
 
-    <!-- CENTER GLASS STAGE WITH 3D TILT EFFECT -->
+    <!-- CENTER GLASS STAGE WITH CORNER-TRIGGERED 3D TILT -->
     <main
       class="relative z-10 w-full h-full flex items-center justify-center px-4 md:px-8 pt-16 pb-20 md:pb-16 perspective-1000"
       @touchstart="handleTouchStart"
       @touchend="handleTouchEnd"
     >
       <div 
-        class="w-full max-w-4xl max-h-[82vh] md:max-h-[76vh] rounded-2xl md:rounded-3xl p-5 md:p-8 backdrop-blur-xl bg-slate-900/75 border border-sky-500/30 shadow-2xl shadow-sky-950/50 flex flex-col justify-between overflow-hidden relative transition-transform duration-200 ease-out animate-pulse-glow"
-        @mousemove="handleCardTilt"
-        @mouseleave="resetCardTilt"
+        class="w-full max-w-4xl max-h-[82vh] md:max-h-[76vh] rounded-2xl md:rounded-3xl p-5 md:p-8 backdrop-blur-xl bg-slate-900/75 border border-sky-500/30 shadow-2xl shadow-sky-950/50 flex flex-col justify-between overflow-hidden relative animate-pulse-glow style-tilt-transition"
+        @click="handleCardClickTrigger"
+        @dblclick="handleCardClickTrigger"
         ref="glassCardRef"
         :style="cardStyle"
       >
@@ -111,7 +111,6 @@
 
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import type { SlideConfig } from './types'
@@ -160,25 +159,61 @@ function prevSlide(): void {
   }
 }
 
-// 3D Glass Card Tilt Logic
+// Corner-Triggered 3D Tilt Configuration
 const glassCardRef = ref<HTMLElement | null>(null)
 const cardStyle = ref<string>('')
+let resetTimeoutId: number | null = null
 
-function handleCardTilt(e: MouseEvent) {
+// The sensor area depth (px) extending inward from each edge
+const SENSOR_BORDER = 60 
+
+function handleCardClickTrigger(e: MouseEvent | TouchEvent) {
   const card = glassCardRef.value
   if (!card) return
-  const rect = card.getBoundingClientRect()
-  const x = e.clientX - rect.left - rect.width / 2
-  const y = e.clientY - rect.top - rect.height / 2
-  
-  const rotateX = (-y / 25).toFixed(2)
-  const rotateY = (x / 25).toFixed(2)
 
-  cardStyle.value = `transform: perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01);`
+  const rect = card.getBoundingClientRect()
+  
+  // Normalize client target positions depending on event mechanism
+  const clientX = 'clientX' in e ? (e as MouseEvent).clientX : (e as TouchEvent).touches[0].clientX
+  const clientY = 'clientY' in e ? (e as MouseEvent).clientY : (e as TouchEvent).touches[0].clientY
+
+  // Calculate local coordinates relative to the component boundary
+  const localX = clientX - rect.left
+  const localY = clientY - rect.top
+
+  // Check if target falls in perimeter active zone
+  const isNearLeftEdge = localX <= SENSOR_BORDER
+  const isNearRightEdge = localX >= rect.width - SENSOR_BORDER
+  const isNearTopEdge = localY <= SENSOR_BORDER
+  const isNearBottomEdge = localY >= rect.height - SENSOR_BORDER
+
+  // Filter Out Central Operations: Only trigger calculations if a corner quadrant is struck
+  const isCornerStruck = (isNearLeftEdge || isNearRightEdge) && (isNearTopEdge || isNearBottomEdge)
+  if (!isCornerStruck) return
+
+  // Clear pending return animations
+  if (resetTimeoutId) {
+    clearTimeout(resetTimeoutId)
+  }
+
+  // Calculate angular rotation weights relative to center coordinates
+  const centerXOffset = localX - rect.width / 2
+  const centerYOffset = localY - rect.height / 2
+  
+  // 15 degrees max dynamic rotation angle based on quadrant coordinates
+  const rotateX = (-centerYOffset / 20).toFixed(2)
+  const rotateY = (centerXOffset / 20).toFixed(2)
+
+  cardStyle.value = `transform: perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02);`
+
+  // Automatic recovery sequence to level layout flat after interaction completes
+  resetTimeoutId = window.setTimeout(() => {
+    resetCardTilt()
+  }, 1200)
 }
 
 function resetCardTilt() {
-  cardStyle.value = 'transform: perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);'
+  cardStyle.value = 'transform: perspective(1200px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1);'
 }
 
 // Typed Keyboard Navigation
@@ -208,9 +243,11 @@ function handleTouchEnd(e: TouchEvent): void {
 }
 
 onMounted(() => window.addEventListener('keydown', handleKeydown))
-onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+  if (resetTimeoutId) clearTimeout(resetTimeoutId)
+})
 </script>
-
 <style scoped>
 .slide-next-enter-active,
 .slide-next-leave-active,
@@ -230,5 +267,10 @@ onUnmounted(() => window.removeEventListener('keydown', handleKeydown))
 
 .animate-pulse-glow {
   animation: pulseGlow 4s infinite ease-in-out;
+}
+
+/* Custom spring-back physical transition curve for deliberate click animations */
+.style-tilt-transition {
+  transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
 }
 </style>
